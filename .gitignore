@@ -1,0 +1,11 @@
+.gradle/
+.idea/
+gradle/
+gradlew
+gradlew.bat
+build/
+api/build/
+core/build/
+
+
+
