@@ -6,6 +6,7 @@ gradlew.bat
 build/
 api/build/
 core/build/
+out/
 
 
 

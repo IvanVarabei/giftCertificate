@@ -1,10 +1,15 @@
 plugins {
-
+    id 'war'
 }
 
 dependencies {
     implementation project(":core")
 }
 
-//war
-//tomcat
+
+task explodedWar(type: Copy) {
+    into "$buildDir/libs/exploded/${project.name}.war"
+    with war
+}
+
+war.dependsOn explodedWar

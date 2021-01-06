@@ -1,14 +1,18 @@
 package com.epam.esm.dto;
 
-import com.epam.esm.entity.Tag;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class CertificateDto {
-    //id
-    private Long giftCertificateId;
+    private Long id;
+    // todo validations @NotNull import javax.validation.constraints.NotNull;
     private String name;
     private String description;
     private BigDecimal price;

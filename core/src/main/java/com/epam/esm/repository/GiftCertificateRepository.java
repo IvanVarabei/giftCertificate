@@ -13,7 +13,7 @@ public class GiftCertificateRepository {
     private static final String FIND_ALL_GIFT_CERTIFICATES = "SELECT id, name, description, price, duration, " +
             "creat_date, last_update_date FROM gift_certificate";
 
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     @Autowired
     public GiftCertificateRepository(JdbcTemplate jdbcTemplate){
@@ -26,6 +26,7 @@ public class GiftCertificateRepository {
             giftCertificate.setGiftCertificateId(rs.getLong("id"));
             giftCertificate.setName(rs.getString("name"));
             giftCertificate.setDescription("description");
+            //todo use certificate.setPrice(rs.getBigDecimal("price"));
             giftCertificate.setPrice(BigDecimal.valueOf(rs.getInt("price")));
             giftCertificate.setDuration(rs.getInt("duration"));
             giftCertificate.setCreateDate(rs.getTimestamp("creat_date").toLocalDateTime());

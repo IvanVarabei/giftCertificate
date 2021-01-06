@@ -1,10 +1,8 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.config.ModelSpringConfig;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.repository.GiftCertificateRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,17 +11,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/certificates")
+@RequiredArgsConstructor
 public class CertificateController {
-    @Autowired
-    private GiftCertificateRepository giftCertificateRepository;
+    private final GiftCertificateRepository giftCertificateRepository;
+    // private final GiftCertificateService giftCertificateService;
 
-    //@GetMapping(produces = "application/json")
-    //sertificateDto List<DTO>
     @GetMapping
     public List<GiftCertificate> getCertificates() {
+        //todo replace onto service
         return giftCertificateRepository.findAll();
     }
 }
-
-//    AnnotationConfigApplicationContext annotationContext =
-//                new AnnotationConfigApplicationContext(ModelSpringConfig.class);
