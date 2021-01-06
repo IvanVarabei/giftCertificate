@@ -5,7 +5,9 @@ gradlew
 gradlew.bat
 build/
 api/build/
+api/out/
 core/build/
+#core/out/
 
 
 
