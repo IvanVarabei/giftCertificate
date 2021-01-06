@@ -25,7 +25,7 @@ public class ModelSpringConfig {
     public DataSource getDataSource() {
         Properties properties = new Properties();
         //todo use speshial annat
-        InputStream is = getClass().getClassLoader().getResourceAsStream("hikari.properties");
+        InputStream is = getClass().getClassLoader().getResourceAsStream("application.properties");
         try {
             properties.load(is);
         } catch (IOException e) {
