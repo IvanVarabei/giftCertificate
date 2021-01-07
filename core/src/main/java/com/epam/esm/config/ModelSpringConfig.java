@@ -1,55 +1,58 @@
 package com.epam.esm.config;
 
-import com.epam.esm.exception.PropertiesFileReadingException;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.sql.DataSource;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 
 @Configuration
 @ComponentScan("com.epam.esm")
+@PropertySource("classpath:application.properties")
+@EnableTransactionManagement
 public class ModelSpringConfig {
-    private static final Logger log = LogManager.getLogger(ModelSpringConfig.class);
+    @Value("${jdbcUrl}")
+    private String jdbcUrl;
+    @Value("${dataSource.user}")
+    private String dataSourceUser;
+    @Value("${dataSource.password}")
+    private String dataSourcePassword;
+    @Value("${driverClassName}")
+    private String driverClassName;
+    @Value("${dataSource.maximumPoolSize}")
+    private int maximumPoolSize;
+    @Value("${dataSource.poolName}")
+    private String poolName;
 
     @Bean
-    public DataSource getDataSource() {
-        Properties properties = new Properties();
-        //todo use speshial annat
-        InputStream is = getClass().getClassLoader().getResourceAsStream("application.properties");
-        try {
-            properties.load(is);
-        } catch (IOException e) {
-            log.fatal(e);
-            throw new PropertiesFileReadingException(e);
-        }
-        HikariConfig config = new HikariConfig(properties);
+    public DataSource createDataSource() {
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(jdbcUrl);
+        config.setUsername(dataSourceUser);
+        config.setPassword(dataSourcePassword);
+        config.setDriverClassName(driverClassName);
+        config.setMaximumPoolSize(maximumPoolSize);
+        config.setPoolName(poolName);
         return new HikariDataSource(config);
     }
 
     @Bean
     public JdbcTemplate getJdbcTemplate() {
-        return new JdbcTemplate(getDataSource());
+        return new JdbcTemplate(createDataSource());
     }
 
     @Bean
     public DataSourceTransactionManager createTransactionManager() {
         DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
-        transactionManager.setDataSource(getDataSource());
+        transactionManager.setDataSource(createDataSource());
         return transactionManager;
     }
-
-//    @Bean
-//    public GiftCertificateRepo repo() {
-//        return new GiftCertificateRepo(getJdbcTemplate());
-//    }
 }
