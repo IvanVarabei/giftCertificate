@@ -17,6 +17,7 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequestMapping("/certificates")
+//
 public class CertificateController1 {
 //    @GetMapping
 //    public List<GiftCertificateDto> getCertificates()...

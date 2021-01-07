@@ -7,7 +7,12 @@ build/
 api/build/
 api/out/
 core/build/
+<<<<<<< HEAD
 core/out/
+||||||| 4fca925
+=======
+out/
+>>>>>>> feature/multy
 
 
 
