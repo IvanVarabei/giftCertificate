@@ -10,7 +10,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.sql.DataSource;
 
@@ -18,7 +17,7 @@ import javax.sql.DataSource;
 @ComponentScan("com.epam.esm")
 @PropertySource("classpath:application.properties")
 @EnableTransactionManagement
-public class ModelSpringConfig {
+public class DatabaseConfig {
     @Value("${jdbcUrl}")
     private String jdbcUrl;
     @Value("${dataSource.user}")

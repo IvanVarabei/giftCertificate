@@ -15,6 +15,7 @@ import java.util.List;
 @Repository
 @RequiredArgsConstructor
 public class GiftCertificateRepository {
+    private final JdbcTemplate jdbcTemplate;
     private static final String FIND_ALL_GIFT_CERTIFICATES = "SELECT gc.id   as gc_id,\n" +
             "       gc.name as gc_name,\n" +
             "       description,\n" +
@@ -28,7 +29,6 @@ public class GiftCertificateRepository {
             "         left join gift_certificate_tag gct\n" +
             "                   on gc.id = gct.gift_certificate_id\n" +
             "         left join tag t on gct.tag_id = t.id";
-    private final JdbcTemplate jdbcTemplate;
 
     public List<GiftCertificate> findAll() {
         return jdbcTemplate.query(con -> con.prepareStatement(FIND_ALL_GIFT_CERTIFICATES,
