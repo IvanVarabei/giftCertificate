@@ -1,21 +1,20 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.service.GiftCertificateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @Slf4j
-@RequestMapping("/certificates")
+@RequestMapping("/api/certificates")
 @RequiredArgsConstructor
 public class CertificateController {
+    private final GiftCertificateService giftCertificateService;
 //    @GetMapping
 //    public List<GiftCertificateDto> getCertificates()...
 //
@@ -25,17 +24,22 @@ public class CertificateController {
 //    @GetMapping(value = "/name/{name}")
 //    public GiftCertificateDto getCertificateByName()...
 //
-//    @PostMapping(value = "/update/id/{id}")
-//    public GiftCertificateDto updateCertificateId()...
+    @PostMapping("{/certificateId}")
+    public GiftCertificateDto updateCertificate(@PathVariable("id") long certificateId,
+                                                @RequestBody GiftCertificateDto giftCertificateDto){
+        giftCertificateService.updateCertificate(certificateId, giftCertificateDto);
+        return null;
+    }
 //
 //    @PostMapping(value = "/update/name/{name}")
 //    public GiftCertificateDto updateCertificateById()...
-    private final GiftCertificateService giftCertificateService;
+
 
     //sertificateDto List<DTO>
+    //localhost:8080/certificates?name='name'&description='description'&sort='asc'
+    //not requered
     @GetMapping
     public List<GiftCertificate> getCertificates() {
-        log.info("hello--------------------------------------------------------------------------------------");
         return giftCertificateService.findAll();
     }
 

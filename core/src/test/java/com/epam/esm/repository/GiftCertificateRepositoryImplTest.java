@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 //@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 //@ContextConfiguration(classes = {EmbeddedTestConfig.class})
 
-class GiftCertificateRepositoryTest {
+class GiftCertificateRepositoryImplTest {
 
     //@Order(1)
     @Test

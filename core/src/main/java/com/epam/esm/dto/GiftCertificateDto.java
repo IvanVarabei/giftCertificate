@@ -1,9 +1,12 @@
 package com.epam.esm.dto;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.util.List;
 
-public class CertificateDto {
+@Data
+public class GiftCertificateDto {
     private Long id;
     private String name;
     private String description;
