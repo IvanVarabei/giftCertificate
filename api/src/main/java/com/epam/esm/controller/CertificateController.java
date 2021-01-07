@@ -25,7 +25,7 @@ public class CertificateController {
 //    public GiftCertificateDto getCertificateByName()...
 //
     @PostMapping("{/certificateId}")
-    public GiftCertificateDto updateCertificate(@PathVariable("id") long certificateId,
+    public GiftCertificateDto updateCertificate(@PathVariable("certificateId") long certificateId,
                                                 @RequestBody GiftCertificateDto giftCertificateDto){
         giftCertificateService.updateCertificate(certificateId, giftCertificateDto);
         return null;
@@ -40,11 +40,7 @@ public class CertificateController {
     //not requered
     @GetMapping
     public List<GiftCertificate> getCertificates() {
-        return giftCertificateService.findAll();
-    }
-
-    @GetMapping(value = "/student")
-    public String getCertific() {
-        return "giftCertificateService.findAll()";
+        List<GiftCertificate> list = giftCertificateService.findAll();
+        return list;
     }
 }

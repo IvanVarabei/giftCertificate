@@ -5,7 +5,7 @@ import com.epam.esm.dto.TagDto;
 import java.util.List;
 
 public interface TagService {
-    boolean createTag(TagDto tagDto);
+    long createTag(TagDto tagDto);
 
     List<TagDto> getTags();
 
@@ -13,5 +13,5 @@ public interface TagService {
 
     TagDto updateTag(long tagId, TagDto tagDto);
 
-    boolean deleteTag(long tagId);
+    int deleteTag(long tagId);
 }

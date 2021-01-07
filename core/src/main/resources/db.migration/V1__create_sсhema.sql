@@ -6,13 +6,15 @@ create table gift_certificate
     price            numeric(16, 2)           not null,
     duration         integer                  not null,
     create_date      timestamp with time zone not null,
-    last_update_date timestamp with time zone
+    last_update_date timestamp with time zone,
+    constraint unique_certificate_name unique (name)
 );
 
 create table tag
 (
     id   serial      not null primary key,
-    name varchar(64) not null
+    name varchar(64) not null,
+    constraint unique_tag_name unique (name)
 );
 
 create table certificate_tag

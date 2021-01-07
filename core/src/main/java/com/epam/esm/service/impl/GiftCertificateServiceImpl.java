@@ -18,7 +18,7 @@ import java.util.List;
 public class GiftCertificateServiceImpl implements GiftCertificateService {
     private final TagService tagService;
     private final GiftCertificateRepository giftCertificateRepository;
-    private final CertificateConverter giftCertificateMapper;
+ //   private final CertificateConverter giftCertificateMapper;
 
     @Override
     public List<GiftCertificate> findAll() {
@@ -28,11 +28,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     @Transactional
     public GiftCertificateDto updateCertificate(Long certificateId, GiftCertificateDto giftCertificateDto) {
-        GiftCertificate existed = giftCertificateRepository.fingById(certificateId).orElseThrow(() ->
+        GiftCertificate existed = giftCertificateRepository.findById(certificateId).orElseThrow(() ->
             new ResourceNotFoundException("certificate does not exist + id"));
         existed.setPrice(giftCertificateDto.getPrice());
         // todo without tags
-        return giftCertificateMapper.toDTO(existed);
+        giftCertificateRepository.update(existed);
+        return null;//giftCertificateMapper.toDTO(existed);
     }
-
 }
