@@ -1,13 +1,11 @@
 package com.epam.esm.service;
 
 import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.entity.GiftCertificate;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 public interface GiftCertificateService {
-    List<GiftCertificate> findAll();
+    List<GiftCertificateDto> getCertificates();
 
     GiftCertificateDto updateCertificate(Long certificateId, GiftCertificateDto giftCertificateDto);
 }

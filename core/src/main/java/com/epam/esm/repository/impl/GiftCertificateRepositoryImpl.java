@@ -8,8 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
-import java.security.cert.Certificate;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;

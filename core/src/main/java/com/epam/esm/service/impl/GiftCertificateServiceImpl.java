@@ -12,17 +12,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class GiftCertificateServiceImpl implements GiftCertificateService {
     private final TagService tagService;
     private final GiftCertificateRepository giftCertificateRepository;
- //   private final CertificateConverter giftCertificateMapper;
+    private final CertificateConverter certificateConverter;
 
     @Override
-    public List<GiftCertificate> findAll() {
-        return giftCertificateRepository.findAll();
+    public List<GiftCertificateDto> getCertificates() {
+        List<GiftCertificate> certificates = giftCertificateRepository.findAll();
+        return certificates.stream().map(certificateConverter::toDTO).collect(Collectors.toList());
     }
 
     @Override

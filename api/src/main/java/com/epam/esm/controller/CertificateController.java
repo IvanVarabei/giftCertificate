@@ -1,7 +1,6 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.service.GiftCertificateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,8 +38,7 @@ public class CertificateController {
     //localhost:8080/certificates?name='name'&description='description'&sort='asc'
     //not requered
     @GetMapping
-    public List<GiftCertificate> getCertificates() {
-        List<GiftCertificate> list = giftCertificateService.findAll();
-        return list;
+    public List<GiftCertificateDto> getCertificates() {
+        return giftCertificateService.getCertificates();
     }
 }
