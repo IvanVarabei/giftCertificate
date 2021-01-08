@@ -15,4 +15,6 @@ public interface TagRepository {
     int update(Tag tag);
 
     int delete(long tagId);
+
+    List<Tag> getTagsByCertificateId(Long id);
 }

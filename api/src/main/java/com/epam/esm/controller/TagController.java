@@ -15,7 +15,7 @@ import java.util.List;
 public class TagController {
     private final TagService tagService;
 
-    @PostMapping("/create")
+    @PostMapping
     public long createTag(@RequestBody TagDto tagDto) {
         return tagService.createTag(tagDto);
     }

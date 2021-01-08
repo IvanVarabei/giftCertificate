@@ -1,7 +1,6 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dto.TagDto;
-import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.repository.TagRepository;
@@ -30,13 +29,14 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public TagDto getTagById(long tagId) {
+//        tagRepository.findById(tagId)  converter.toDTO)
+        tagRepository.findById(tagId);
         return null;
     }
 
     @Override
     public TagDto updateTag(long tagId, TagDto tagDto) {
-        Tag existed = tagRepository.findById(tagId).orElseThrow(() ->
-                new ResourceNotFoundException("certificate does not exist + id"));
+        Tag existed = tagRepository.findById(tagId).orElseThrow(() -> new ResourceNotFoundException("certificate does not exist + id"));
         existed.setName(tagDto.getName());
         tagRepository.update(existed);
         TagDto updatedTagDto = new TagDto();
