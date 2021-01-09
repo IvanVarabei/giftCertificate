@@ -11,5 +11,5 @@ public interface TagService {
 
     TagDto getTagById(long tagId);
 
-    boolean deleteTag(long tagId);
+    void deleteTag(long tagId);
 }

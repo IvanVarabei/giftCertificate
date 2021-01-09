@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,13 +28,24 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public GiftCertificateDto createCertificate(GiftCertificateDto giftCertificateDto) {
         GiftCertificate giftCertificate = certificateConverter.toEntity(giftCertificateDto);
-        return certificateConverter.toDTO(giftCertificateRepository.save(giftCertificate));
+        giftCertificateRepository.save(giftCertificate);
+        giftCertificate.getTags().forEach(t -> {
+            Optional<Tag> tagOptional = tagRepository.findByName(t.getName());
+            if (tagOptional.isEmpty()) {
+                tagRepository.save(t);
+            } else {
+                t.setId(tagOptional.get().getId());
+            }
+            tagRepository.bindWithCertificate(giftCertificate.getId(), t.getId());
+        });
+        return certificateConverter.toDTO(giftCertificate);
     }
-
+// unbind service level
+    //crtl alt <-
     @Override
     public List<GiftCertificateDto> getCertificates() {
         List<GiftCertificate> certificates = giftCertificateRepository.findAll();
-        certificates.forEach(c-> c.setTags(tagRepository.getTagsByCertificateId(c.getId()))); //new
+        certificates.forEach(c -> c.setTags(tagRepository.getTagsByCertificateId(c.getId()))); //new
         return certificates.stream().map(certificateConverter::toDTO).collect(Collectors.toList());
     }
 

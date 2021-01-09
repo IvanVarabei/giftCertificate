@@ -37,8 +37,8 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
             "create_date, last_update_date from gift_certificate where id = ?";
     private static final String SQL_DELETE_CERTIFICATE = "delete from gift_certificate where id = ?";
 
-    @Override
-    @Transactional
+    @Override// update
+    @Transactional // test
     public GiftCertificate save(GiftCertificate giftCertificate) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -53,15 +53,6 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
         giftCertificate.setId(((Number) keyHolder.getKeys().get("id")).longValue());
         giftCertificate.setCreatedDate(((Timestamp) (keyHolder.getKeys().get("create_date"))).toLocalDateTime());
         giftCertificate.setUpdatedDate(((Timestamp) (keyHolder.getKeys().get("last_update_date"))).toLocalDateTime());
-        giftCertificate.getTags().stream()
-                .filter(t -> tagRepository.findByName(t.getName()).isEmpty())
-                .forEach(tagRepository::save);
-        giftCertificate.getTags().stream()
-                .filter(t-> t.getId() == null)
-                .forEach(t -> t.setId(tagRepository.findByName(t.getName()).get().getId()));
-        giftCertificate.getTags().stream()
-                .map(t -> tagRepository.findByName(t.getName()))
-                .forEach(t -> tagRepository.bindWithCertificate(giftCertificate.getId(), t.get().getId()));
         return giftCertificate;
     }
 
