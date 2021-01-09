@@ -5,9 +5,10 @@ create table gift_certificate
     description      varchar(512),
     price            numeric(16, 2)           not null,
     duration         integer                  not null,
-    create_date      timestamp with time zone not null,
-    last_update_date timestamp with time zone,
-    constraint unique_certificate_name unique (name)
+    create_date      timestamp with time zone not null default current_timestamp,
+    last_update_date timestamp with time zone not null default current_timestamp,
+    constraint unique_certificate_name unique (name),
+    constraint positive_price check (price > (0)::numeric)
 );
 
 create table tag
@@ -24,5 +25,4 @@ create table certificate_tag
     constraint gift_certificate_tag_pkey
         primary key (gift_certificate_id, tag_id)
 );
---todo tag  and certificate_tag
--- what did you mean "todo tag"?
+

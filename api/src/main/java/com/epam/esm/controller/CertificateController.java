@@ -14,16 +14,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CertificateController {
     private final GiftCertificateService giftCertificateService;
-//    @GetMapping
-//    public List<GiftCertificateDto> getCertificates()...
-//
-//    @GetMapping(value = "/id/{id}")
-//    public GiftCertificateDto getCertificateById()...
+    @GetMapping("/{certificateId}")
+    public GiftCertificateDto getCertificateById(@PathVariable("certificateId") long certificateId){
+        return giftCertificateService.getCertificateById(certificateId);
+    }
 //
 //    @GetMapping(value = "/name/{name}")
 //    public GiftCertificateDto getCertificateByName()...
 //
-    @PostMapping("{/certificateId}")
+    @PostMapping("/{certificateId}")
     public GiftCertificateDto updateCertificate(@PathVariable("certificateId") long certificateId,
                                                 @RequestBody GiftCertificateDto giftCertificateDto){
         giftCertificateService.updateCertificate(certificateId, giftCertificateDto);
@@ -40,5 +39,10 @@ public class CertificateController {
     @GetMapping
     public List<GiftCertificateDto> getCertificates() {
         return giftCertificateService.getCertificates();
+    }
+
+    @DeleteMapping("/{certificateId}")
+    public boolean deleteCertificate(@PathVariable("certificateId") long certificateId){
+        return giftCertificateService.deleteCertificate(certificateId);
     }
 }

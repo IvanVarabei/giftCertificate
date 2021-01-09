@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface GiftCertificateRepository {
-    boolean save(GiftCertificate giftCertificate);
+    GiftCertificate save(GiftCertificate giftCertificate);
 
     List<GiftCertificate> findAll();
 

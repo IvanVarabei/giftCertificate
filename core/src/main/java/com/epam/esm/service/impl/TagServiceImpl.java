@@ -3,50 +3,48 @@ package com.epam.esm.service.impl;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ResourceNotFoundException;
+import com.epam.esm.mapper.TagConverter;
 import com.epam.esm.repository.TagRepository;
 import com.epam.esm.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class TagServiceImpl implements TagService {
     private final TagRepository tagRepository;
+    private final TagConverter tagConverter;
 
     @Override
-    public long createTag(TagDto tagDto) {
-        Tag tag = new Tag();
-        tag.setName(tagDto.getName());
-        return tagRepository.create(tag);
+    public TagDto createTag(TagDto tagDto) {
+        Tag tag = tagConverter.toEntity(tagDto);
+        return tagConverter.toDTO(tagRepository.save(tag));
     }
 
     @Override
     public List<TagDto> getTags() {
-        return null;
+        return tagRepository.findAll().stream().map(tagConverter::toDTO).collect(Collectors.toList());
     }
 
     @Override
     public TagDto getTagById(long tagId) {
-//        tagRepository.findById(tagId)  converter.toDTO)
-        tagRepository.findById(tagId);
-        return null;
+        return tagConverter.toDTO(tagRepository.findById(tagId).orElseThrow(() ->
+                new ResourceNotFoundException(String.format("Requested resource not found (id = %s)", tagId))));
     }
 
     @Override
-    public TagDto updateTag(long tagId, TagDto tagDto) {
-        Tag existed = tagRepository.findById(tagId).orElseThrow(() -> new ResourceNotFoundException("certificate does not exist + id"));
+    public boolean updateTag(long tagId, TagDto tagDto) {
+        Tag existed = tagRepository.findById(tagId).orElseThrow(() ->
+                new ResourceNotFoundException(String.format("Requested resource not found (id = %s)", tagId)));
         existed.setName(tagDto.getName());
-        tagRepository.update(existed);
-        TagDto updatedTagDto = new TagDto();
-        updatedTagDto.setId(existed.getId());
-        updatedTagDto.setName(existed.getName());
-        return updatedTagDto;
+        return tagRepository.update(existed);
     }
 
     @Override
-    public int deleteTag(long tagId) {
+    public boolean deleteTag(long tagId) {
         return tagRepository.delete(tagId);
     }
 }

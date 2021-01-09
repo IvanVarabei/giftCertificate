@@ -22,19 +22,35 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private final CertificateConverter certificateConverter;
 
     @Override
+    public GiftCertificateDto saveCertificate(GiftCertificateDto giftCertificateDto) {
+        return null;
+    }
+
+    @Override
     public List<GiftCertificateDto> getCertificates() {
         List<GiftCertificate> certificates = giftCertificateRepository.findAll();
         return certificates.stream().map(certificateConverter::toDTO).collect(Collectors.toList());
     }
 
     @Override
+    public GiftCertificateDto getCertificateById(long certificateId) {
+        return certificateConverter.toDTO(giftCertificateRepository.findById(certificateId).orElseThrow(() ->
+                new ResourceNotFoundException(String.format("Requested resource not found (id = %s)", certificateId))));
+    }
+
+    @Override
     @Transactional
     public GiftCertificateDto updateCertificate(Long certificateId, GiftCertificateDto giftCertificateDto) {
         GiftCertificate existed = giftCertificateRepository.findById(certificateId).orElseThrow(() ->
-            new ResourceNotFoundException("certificate does not exist + id"));
+                new ResourceNotFoundException(String.format("Requested resource not found (id = %s)", certificateId)));
         existed.setPrice(giftCertificateDto.getPrice());
         // todo without tags
         giftCertificateRepository.update(existed);
         return null;//giftCertificateMapper.toDTO(existed);
+    }
+
+    @Override
+    public boolean deleteCertificate(long certificateId) {
+        return giftCertificateRepository.delete(certificateId);
     }
 }

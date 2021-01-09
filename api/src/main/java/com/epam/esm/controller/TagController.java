@@ -16,7 +16,7 @@ public class TagController {
     private final TagService tagService;
 
     @PostMapping
-    public long createTag(@RequestBody TagDto tagDto) {
+    public TagDto createTag(@RequestBody TagDto tagDto) {
         return tagService.createTag(tagDto);
     }
 
@@ -31,12 +31,12 @@ public class TagController {
     }
 
     @PutMapping("/{tagId}")
-    public TagDto updateTag(@PathVariable("tagId") long tagId, @RequestBody TagDto tagDto) {
+    public boolean updateTag(@PathVariable("tagId") long tagId, @RequestBody TagDto tagDto) {
         return tagService.updateTag(tagId, tagDto);
     }
 
     @DeleteMapping("/{tagId}")
-    public int deleteTagById(@PathVariable("tagId") long tagId) {
+    public boolean deleteTagById(@PathVariable("tagId") long tagId) {
         return tagService.deleteTag(tagId);
     }
 }

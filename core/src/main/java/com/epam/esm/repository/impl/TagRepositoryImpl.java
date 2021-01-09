@@ -3,7 +3,6 @@ package com.epam.esm.repository.impl;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.mapper.TagMapper;
 import com.epam.esm.repository.TagRepository;
-import com.epam.esm.service.GeneralRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -11,66 +10,69 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class TagRepositoryImpl extends GeneralRepository implements TagRepository {
+public class TagRepositoryImpl implements TagRepository {
     private final JdbcTemplate jdbcTemplate;
     private final TagMapper tagMapper;
-    private static final String CREATE_TAG = "insert into tag (name) values (?)";
-    private static final String READ_TAG_BY_ID = "select id, name from tag where id = ?";
-    private static final String UPDATE_TAG = "update tag set name = ? where id = ?";
-    private static final String DELETE_TAG = "delete from tag where id = ?";
-    private static final String QUERY_GET_TAGS_BY_CERTIFICATE_ID = "SELECT id, name FROM tag INNER JOIN certificate_tag ON tag.id = tag_id WHERE gift_certificate_id = ?";
+    private static final String SQL_CREATE_TAG = "insert into tag (name) values (?)";
+    private static final String SQL_READ_TAG_BY_ID = "select id, name from tag where id = ?";
+    private static final String SQL_READ_TAGS = "select id, name from tag";
+    private static final String SQL_READ_TAGS_BY_CERTIFICATE_ID = "SELECT id, name FROM tag JOIN certificate_tag " +
+            "ON tag.id = tag_id WHERE gift_certificate_id = ?";
+    private static final String SQL_UPDATE_TAG = "update tag set name = ? where id = ?";
+    private static final String SQL_DELETE_TAG = "delete from tag where id = ?";
 
     @Override
-    public long create(Tag tag) {
+    public Tag save(Tag tag) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(con -> {
-            PreparedStatement ps = con.prepareStatement(CREATE_TAG, new String[]{"id"});
-            setParameters(ps, tag.getName());
-            return ps;
+        jdbcTemplate.update(connection -> {
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL_CREATE_TAG, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1, tag.getName());
+            return preparedStatement;
         }, keyHolder);
-        return keyHolder.getKey().longValue();
+        tag.setId(((Number) keyHolder.getKeys().get("id")).longValue());
+        return tag;
     }
 
     @Override
     public List<Tag> findAll() {
-        return null;
+        return jdbcTemplate.query(SQL_READ_TAGS, tagMapper);
     }
 
-    //todo
     @Override
     public Optional<Tag> findById(Long tagId) {
-        return jdbcTemplate.query(READ_TAG_BY_ID, tagMapper,tagId).stream().findFirst();
+        return jdbcTemplate.query(SQL_READ_TAG_BY_ID, tagMapper, tagId).stream().findAny();
     }
 
     @Override
-    public int update(Tag tag) {
-        return jdbcTemplate.update(con -> {
-            PreparedStatement ps = con.prepareStatement(UPDATE_TAG);
-            setParameters(ps, tag.getName(), tag.getId());
-            return ps;
-        });
+    public boolean update(Tag tag) {
+        return 1 == jdbcTemplate.update(SQL_UPDATE_TAG, tag.getName(), tag.getId());
     }
 
     @Override
-    public int delete(long tageId) {
-        return jdbcTemplate.update(con -> {
-            PreparedStatement ps = con.prepareStatement(DELETE_TAG);
-            setParameters(ps, tageId);
-            return ps;
-        });
+    public boolean delete(long tageId) {
+        return 1 == jdbcTemplate.update(SQL_DELETE_TAG, tageId);
     }
 
     @Override
-    public List<Tag> getTagsByCertificateId(Long id) {
-        if (id == null) {
+    public List<Tag> getTagsByCertificateId(Long certificateId) {
+        if (certificateId == null) {
             return Collections.emptyList();
         }
-        return jdbcTemplate.query(QUERY_GET_TAGS_BY_CERTIFICATE_ID, tagMapper, id);
+        return jdbcTemplate.query(SQL_READ_TAGS_BY_CERTIFICATE_ID, tagMapper, certificateId);
+    }
+
+    public void bindWithCertificate(Long certificateId, Long tagId) {
+//third table
+    }
+
+    public void unbindWithCertificate(Long certificateId, Long tagId) {
+
     }
 }
