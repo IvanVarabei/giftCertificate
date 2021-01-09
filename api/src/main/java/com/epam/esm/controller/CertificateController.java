@@ -14,35 +14,33 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CertificateController {
     private final GiftCertificateService giftCertificateService;
-    @GetMapping("/{certificateId}")
-    public GiftCertificateDto getCertificateById(@PathVariable("certificateId") long certificateId){
-        return giftCertificateService.getCertificateById(certificateId);
-    }
-//
-//    @GetMapping(value = "/name/{name}")
-//    public GiftCertificateDto getCertificateByName()...
-//
-    @PostMapping("/{certificateId}")
-    public GiftCertificateDto updateCertificate(@PathVariable("certificateId") long certificateId,
-                                                @RequestBody GiftCertificateDto giftCertificateDto){
-        giftCertificateService.updateCertificate(certificateId, giftCertificateDto);
-        return null;
-    }
-//
-//    @PostMapping(value = "/update/name/{name}")
-//    public GiftCertificateDto updateCertificateById()...
 
+    @PostMapping
+    public GiftCertificateDto createCertificate(@RequestBody GiftCertificateDto giftCertificateDto) {
+        return giftCertificateService.createCertificate(giftCertificateDto);
+    }
 
-    //sertificateDto List<DTO>
-    //localhost:8080/certificates?name='name'&description='description'&sort='asc'
-    //not requered
     @GetMapping
-    public List<GiftCertificateDto> getCertificates() {
+    public List<GiftCertificateDto> getCertificates(@RequestParam(required = false) String tagName,
+                                                    @RequestParam(required = false) String name,
+                                                    @RequestParam(required = false) String description,
+                                                    @RequestParam(required = false) String sortField,
+                                                    @RequestParam(required = false) String sortDirection) {
         return giftCertificateService.getCertificates();
     }
 
+    @GetMapping("/{certificateId}")
+    public GiftCertificateDto getCertificateById(@PathVariable("certificateId") long certificateId) {
+        return giftCertificateService.getCertificateById(certificateId);
+    }
+
+    @PutMapping
+    public GiftCertificateDto updateCertificate(@RequestBody GiftCertificateDto giftCertificateDto) {
+        return giftCertificateService.updateCertificate(giftCertificateDto);
+    }
+
     @DeleteMapping("/{certificateId}")
-    public boolean deleteCertificate(@PathVariable("certificateId") long certificateId){
+    public boolean deleteCertificate(@PathVariable("certificateId") long certificateId) {
         return giftCertificateService.deleteCertificate(certificateId);
     }
 }

@@ -36,7 +36,8 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public boolean updateTag(long tagId, TagDto tagDto) {
+    public boolean updateTag(TagDto tagDto) {
+        long tagId = tagDto.getId();
         Tag existed = tagRepository.findById(tagId).orElseThrow(() ->
                 new ResourceNotFoundException(String.format("Requested resource not found (id = %s)", tagId)));
         existed.setName(tagDto.getName());

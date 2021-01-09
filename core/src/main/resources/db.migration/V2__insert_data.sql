@@ -11,3 +11,4 @@ VALUES (1, 'gym'),
 INSERT INTO public.certificate_tag(gift_certificate_id, tag_id)
 VALUES (1, 1),
        (1, 2);
+

@@ -2,6 +2,7 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.mapper.CertificateConverter;
 import com.epam.esm.repository.GiftCertificateRepository;
@@ -22,8 +23,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private final CertificateConverter certificateConverter;
 
     @Override
-    public GiftCertificateDto saveCertificate(GiftCertificateDto giftCertificateDto) {
-        return null;
+    public GiftCertificateDto createCertificate(GiftCertificateDto giftCertificateDto) {
+        GiftCertificate giftCertificate = certificateConverter.toEntity(giftCertificateDto);
+        return certificateConverter.toDTO(giftCertificateRepository.save(giftCertificate));
     }
 
     @Override
@@ -40,13 +42,14 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     @Transactional
-    public GiftCertificateDto updateCertificate(Long certificateId, GiftCertificateDto giftCertificateDto) {
+    public GiftCertificateDto updateCertificate(GiftCertificateDto giftCertificateDto) {
+        long certificateId = giftCertificateDto.getId();
         GiftCertificate existed = giftCertificateRepository.findById(certificateId).orElseThrow(() ->
                 new ResourceNotFoundException(String.format("Requested resource not found (id = %s)", certificateId)));
         existed.setPrice(giftCertificateDto.getPrice());
         // todo without tags
         giftCertificateRepository.update(existed);
-        return null;//giftCertificateMapper.toDTO(existed);
+        return certificateConverter.toDTO(existed);
     }
 
     @Override

@@ -22,11 +22,13 @@ public class TagRepositoryImpl implements TagRepository {
     private final TagMapper tagMapper;
     private static final String SQL_CREATE_TAG = "insert into tag (name) values (?)";
     private static final String SQL_READ_TAG_BY_ID = "select id, name from tag where id = ?";
+    private static final String SQL_READ_TAG_BY_NAME = "select id, name from tag where name = ?";
     private static final String SQL_READ_TAGS = "select id, name from tag";
-    private static final String SQL_READ_TAGS_BY_CERTIFICATE_ID = "SELECT id, name FROM tag JOIN certificate_tag " +
-            "ON tag.id = tag_id WHERE gift_certificate_id = ?";
+    private static final String SQL_READ_TAGS_BY_CERTIFICATE_ID =
+            "SELECT id, name FROM tag JOIN certificate_tag ON tag.id = tag_id WHERE gift_certificate_id = ?";
     private static final String SQL_UPDATE_TAG = "update tag set name = ? where id = ?";
     private static final String SQL_DELETE_TAG = "delete from tag where id = ?";
+    private static final String SQL_BIND_TAG = "insert into certificate_tag (gift_certificate_id, tag_id) values (?, ?)";
 
     @Override
     public Tag save(Tag tag) {
@@ -51,6 +53,11 @@ public class TagRepositoryImpl implements TagRepository {
     }
 
     @Override
+    public Optional<Tag> findByName(String name) {
+        return jdbcTemplate.query(SQL_READ_TAG_BY_NAME, tagMapper, name).stream().findAny();
+    }
+
+    @Override
     public boolean update(Tag tag) {
         return 1 == jdbcTemplate.update(SQL_UPDATE_TAG, tag.getName(), tag.getId());
     }
@@ -68,10 +75,12 @@ public class TagRepositoryImpl implements TagRepository {
         return jdbcTemplate.query(SQL_READ_TAGS_BY_CERTIFICATE_ID, tagMapper, certificateId);
     }
 
+    @Override
     public void bindWithCertificate(Long certificateId, Long tagId) {
-//third table
+        jdbcTemplate.update(SQL_BIND_TAG, certificateId, tagId);
     }
 
+    @Override
     public void unbindWithCertificate(Long certificateId, Long tagId) {
 
     }

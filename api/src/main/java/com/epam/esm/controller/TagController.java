@@ -30,9 +30,9 @@ public class TagController {
         return tagService.getTagById(tagId);
     }
 
-    @PutMapping("/{tagId}")
-    public boolean updateTag(@PathVariable("tagId") long tagId, @RequestBody TagDto tagDto) {
-        return tagService.updateTag(tagId, tagDto);
+    @PutMapping
+    public boolean updateTag(@RequestBody TagDto tagDto) {
+        return tagService.updateTag(tagDto);
     }
 
     @DeleteMapping("/{tagId}")

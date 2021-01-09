@@ -12,9 +12,15 @@ public interface TagRepository {
 
     Optional<Tag> findById(Long tagId);
 
+    Optional<Tag> findByName(String name);
+
     boolean update(Tag tag);
 
     boolean delete(long tagId);
 
     List<Tag> getTagsByCertificateId(Long id);
+
+    void bindWithCertificate(Long certificateId, Long tagId);
+
+    void unbindWithCertificate(Long certificateId, Long tagId);
 }
