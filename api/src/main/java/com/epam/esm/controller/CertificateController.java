@@ -4,6 +4,7 @@ import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.service.GiftCertificateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,7 +41,7 @@ public class CertificateController {
     }
 
     @DeleteMapping("/{certificateId}")
-    public boolean deleteCertificate(@PathVariable("certificateId") long certificateId) {
-        return giftCertificateService.deleteCertificate(certificateId);
+    public ResponseEntity<?> deleteCertificate(@PathVariable("certificateId") long certificateId) {
+        return ResponseEntity.noContent().build();
     }
 }

@@ -11,7 +11,5 @@ public interface TagService {
 
     TagDto getTagById(long tagId);
 
-    boolean updateTag(TagDto tagDto);
-
     boolean deleteTag(long tagId);
 }

@@ -12,8 +12,6 @@ import java.sql.SQLException;
 @Component
 @RequiredArgsConstructor
 public class CertificateMapper implements RowMapper<GiftCertificate> {
-    private final TagRepository tagRepository;
-
     @Override
     public GiftCertificate mapRow(ResultSet rs, int rowNum) throws SQLException {
         GiftCertificate giftCertificate = new GiftCertificate();
@@ -24,7 +22,6 @@ public class CertificateMapper implements RowMapper<GiftCertificate> {
         giftCertificate.setDuration(rs.getInt("duration"));
         giftCertificate.setCreatedDate(rs.getTimestamp("create_date").toLocalDateTime());
         giftCertificate.setUpdatedDate(rs.getTimestamp("last_update_date").toLocalDateTime());
-        giftCertificate.setTags(tagRepository.getTagsByCertificateId(giftCertificate.getId()));
         return giftCertificate;
     }
 }

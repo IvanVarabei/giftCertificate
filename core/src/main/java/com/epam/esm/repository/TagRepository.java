@@ -14,8 +14,6 @@ public interface TagRepository {
 
     Optional<Tag> findByName(String name);
 
-    boolean update(Tag tag);
-
     boolean delete(long tagId);
 
     List<Tag> getTagsByCertificateId(Long id);

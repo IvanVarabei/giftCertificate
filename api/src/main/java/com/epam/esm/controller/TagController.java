@@ -4,6 +4,7 @@ import com.epam.esm.dto.TagDto;
 import com.epam.esm.service.TagService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,13 +31,9 @@ public class TagController {
         return tagService.getTagById(tagId);
     }
 
-    @PutMapping
-    public boolean updateTag(@RequestBody TagDto tagDto) {
-        return tagService.updateTag(tagDto);
-    }
-
     @DeleteMapping("/{tagId}")
-    public boolean deleteTagById(@PathVariable("tagId") long tagId) {
-        return tagService.deleteTag(tagId);
+    public ResponseEntity<?> deleteTagById(@PathVariable("tagId") long tagId) {
+        tagService.deleteTag(tagId);
+        return ResponseEntity.noContent().build();
     }
 }

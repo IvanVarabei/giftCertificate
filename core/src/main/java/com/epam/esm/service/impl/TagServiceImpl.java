@@ -36,15 +36,6 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public boolean updateTag(TagDto tagDto) {
-        long tagId = tagDto.getId();
-        Tag existed = tagRepository.findById(tagId).orElseThrow(() ->
-                new ResourceNotFoundException(String.format("Requested resource not found (id = %s)", tagId)));
-        existed.setName(tagDto.getName());
-        return tagRepository.update(existed);
-    }
-
-    @Override
     public boolean deleteTag(long tagId) {
         return tagRepository.delete(tagId);
     }
