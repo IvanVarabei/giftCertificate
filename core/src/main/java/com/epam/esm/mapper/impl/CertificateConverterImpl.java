@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -66,7 +67,7 @@ public class CertificateConverterImpl implements CertificateConverter {
     @Override
     public List<Tag> toEntities(List<TagDto> tagsDto) {
         if (tagsDto == null) {
-            return null;
+            return Collections.emptyList();
         }
 
         List<Tag> list = new ArrayList<Tag>(tagsDto.size());
