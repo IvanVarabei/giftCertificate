@@ -16,7 +16,7 @@ public interface TagRepository {
 
     void update(Tag tag);
 
-    void delete(long tagId);
+    void delete(Long tagId);
 
     List<Tag> getTagsByCertificateId(Long id);
 
@@ -24,5 +24,5 @@ public interface TagRepository {
 
     void unbindWithCertificate(Long certificateId, Long tagId);
 
-    boolean isBound(long certificateId, Long id);
+    boolean isBound(Long certificateId, Long id);
 }

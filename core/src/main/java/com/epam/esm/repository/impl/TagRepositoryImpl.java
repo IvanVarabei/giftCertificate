@@ -68,7 +68,7 @@ public class TagRepositoryImpl implements TagRepository {
     }
 
     @Override
-    public void delete(long tageId) {
+    public void delete(Long tageId) {
         jdbcTemplate.update(SQL_DELETE_TAG, tageId);
     }
 
@@ -91,7 +91,7 @@ public class TagRepositoryImpl implements TagRepository {
     }
 
     @Override
-    public boolean isBound(long certificateId, Long id) {
+    public boolean isBound(Long certificateId, Long id) {
         return jdbcTemplate
                 .queryForObject(SQL_IS_BOUND, new Object[] {certificateId, id}, Boolean.class);
     }

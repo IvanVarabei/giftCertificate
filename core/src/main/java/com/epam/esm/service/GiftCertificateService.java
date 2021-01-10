@@ -9,9 +9,9 @@ public interface GiftCertificateService {
 
     List<GiftCertificateDto> getCertificates();
 
-    GiftCertificateDto getCertificateById(long certificateId);
+    GiftCertificateDto getCertificateById(Long certificateId);
 
     GiftCertificateDto updateCertificate(GiftCertificateDto giftCertificateDto);
 
-    void deleteCertificate(long certificateId);
+    void deleteCertificate(Long certificateId);
 }

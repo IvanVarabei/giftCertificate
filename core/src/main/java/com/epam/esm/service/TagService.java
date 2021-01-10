@@ -9,9 +9,9 @@ public interface TagService {
 
     List<TagDto> getTags();
 
-    TagDto getTagById(long tagId);
+    TagDto getTagById(Long tagId);
 
     TagDto updateTag(TagDto tagDto);
 
-    void deleteTag(long tagId);
+    void deleteTag(Long tagId);
 }

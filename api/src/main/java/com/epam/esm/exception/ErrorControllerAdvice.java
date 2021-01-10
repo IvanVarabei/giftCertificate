@@ -41,10 +41,10 @@ public class ErrorControllerAdvice {
     @ExceptionHandler(DuplicateKeyException.class)
     ResponseEntity<ExceptionDto> handleException(DuplicateKeyException e) {
         ExceptionDto exceptionDto = new ExceptionDto();
-        exceptionDto.setErrorMessage(e.getMessage());
+        exceptionDto.setErrorMessage(e.getLocalizedMessage());
         exceptionDto.setErrorCode(40901);
         exceptionDto.setTimestamp(LocalDateTime.now());
-        return ResponseEntity.badRequest().body(exceptionDto);
+        return ResponseEntity.status(409).body(exceptionDto);
     }
 
 //    @ResponseStatus(INTERNAL_SERVER_ERROR)

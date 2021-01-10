@@ -47,7 +47,7 @@ public class CertificateController {
     }
 
     @GetMapping("/{certificateId}")
-    public GiftCertificateDto getCertificateById(@PathVariable("certificateId") long certificateId) {
+    public GiftCertificateDto getCertificateById(@PathVariable("certificateId") Long certificateId) {
         return giftCertificateService.getCertificateById(certificateId);
     }
 
@@ -57,7 +57,7 @@ public class CertificateController {
     }
 
     @DeleteMapping("/{certificateId}")
-    public ResponseEntity<GiftCertificateDto> deleteCertificate(@PathVariable("certificateId") long certificateId) {
+    public ResponseEntity<GiftCertificateDto> deleteCertificate(@PathVariable("certificateId") Long certificateId) {
         giftCertificateService.deleteCertificate(certificateId);
         return ResponseEntity.noContent().build();
     }

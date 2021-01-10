@@ -20,7 +20,7 @@ public class GiftCertificateDto {
     @Digits(integer = 7, fraction = 2)
     private BigDecimal price;
     @Positive
-    private int duration;
+    private Integer duration;
     private String createdDate;
     private String updatedDate;
     private List<TagDto> tags;

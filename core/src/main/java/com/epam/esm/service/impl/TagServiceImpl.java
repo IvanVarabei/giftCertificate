@@ -31,14 +31,14 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public TagDto getTagById(long tagId) {
+    public TagDto getTagById(Long tagId) {
         return tagConverter.toDTO(tagRepository.findById(tagId).orElseThrow(() ->
                 new ResourceNotFoundException(String.format(ErrorMessage.RESOURCE_NOT_FOUND, tagId))));
     }
 
     @Override
     public TagDto updateTag(TagDto tagDto) {
-        long tagId = tagDto.getId();
+        Long tagId = tagDto.getId();
         Tag existed = tagRepository.findById(tagId).orElseThrow(() ->
                 new ResourceNotFoundException(String.format(ErrorMessage.RESOURCE_NOT_FOUND, tagId)));
         existed.setName(tagDto.getName());
@@ -47,7 +47,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public void deleteTag(long tagId) {
+    public void deleteTag(Long tagId) {
         tagRepository.findById(tagId).ifPresentOrElse(t -> tagRepository.delete(tagId), () -> {
             throw new ResourceNotFoundException(String.format(ErrorMessage.RESOURCE_NOT_FOUND, tagId));
         });

@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -47,7 +46,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         return certificateConverter.toDTO(giftCertificate);
     }
 
-    // unbind service level
     //crtl alt <-
     @Override
     public List<GiftCertificateDto> getCertificates() {
@@ -57,7 +55,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public GiftCertificateDto getCertificateById(long certificateId) {
+    public GiftCertificateDto getCertificateById(Long certificateId) {
         return certificateConverter.toDTO(giftCertificateRepository.findById(certificateId).orElseThrow(() ->
                 new ResourceNotFoundException(String.format(ErrorMessage.RESOURCE_NOT_FOUND, certificateId))));
     }
@@ -65,39 +63,27 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     @Transactional
     public GiftCertificateDto updateCertificate(GiftCertificateDto giftCertificateDto) {
-        long certificateId = giftCertificateDto.getId();
+        Long certificateId = giftCertificateDto.getId();
         GiftCertificate existed = giftCertificateRepository.findById(certificateId).orElseThrow(() ->
                 new ResourceNotFoundException(String.format(ErrorMessage.RESOURCE_NOT_FOUND, certificateId)));
-        existed.setTags(tagRepository.getTagsByCertificateId(giftCertificateDto.getId()));
-        if (giftCertificateDto.getName() != null) {
-            existed.setName(giftCertificateDto.getName());
-        }
-        if (giftCertificateDto.getDescription() != null) {
-            existed.setDescription(giftCertificateDto.getDescription());
-        }
-        if (giftCertificateDto.getPrice() != null) {
-            existed.setPrice(giftCertificateDto.getPrice());
-        }
-        if (giftCertificateDto.getDuration() != existed.getDuration()) {
-            existed.setDuration(giftCertificateDto.getDuration());
-        }
-        if (giftCertificateDto.getTags() == null) {
-            giftCertificateDto.setTags(Collections.emptyList());
-        }
+        Optional.ofNullable(giftCertificateDto.getName()).ifPresent(n -> existed.setName(giftCertificateDto.getName()));
+        Optional.ofNullable(giftCertificateDto.getDescription())
+                .ifPresent(n -> existed.setDescription(giftCertificateDto.getDescription()));
+        Optional.ofNullable(giftCertificateDto.getPrice())
+                .ifPresent(n -> existed.setPrice(giftCertificateDto.getPrice()));
+        Optional.ofNullable(giftCertificateDto.getDuration())
+                .ifPresent(n -> existed.setDuration(giftCertificateDto.getDuration()));
+        Optional.ofNullable(giftCertificateDto.getTags()).ifPresentOrElse(i -> { },
+                () -> giftCertificateDto.setTags(Collections.emptyList()));
         giftCertificateDto.getTags().forEach(t -> {
-            Optional<Tag> tagOptional = tagRepository.findByName(t.getName());
-            if (tagOptional.isEmpty()) {
-                Tag t1 = tagRepository.save(tagConverter.toEntity(t));
-                t.setId(t1.getId());
-            } else {
-                t.setId(tagOptional.get().getId());
-            }
+            t.setId(tagRepository.findByName(t.getName())
+                    .orElseGet(() -> tagRepository.save(tagConverter.toEntity(t))).getId());
             if (!tagRepository.isBound(certificateId, t.getId())) {
                 tagRepository.bindWithCertificate(certificateId, t.getId());
                 existed.getTags().add(tagRepository.findByName(t.getName()).get());
             }
         });
-        new ArrayList<>(existed.getTags()).stream()
+        List.copyOf(existed.getTags()).stream()
                 .filter(t -> !giftCertificateDto.getTags().stream().map(TagDto::getName)
                         .collect(Collectors.toList()).contains(t.getName()))
                 .forEach(t -> {
@@ -109,7 +95,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public void deleteCertificate(long certificateId) {
+    public void deleteCertificate(Long certificateId) {
         giftCertificateRepository.findById(certificateId)
                 .ifPresentOrElse(t -> giftCertificateRepository.delete(certificateId), () -> {
                     throw new ResourceNotFoundException(String.format(ErrorMessage.RESOURCE_NOT_FOUND, certificateId));

@@ -5,6 +5,7 @@ import com.epam.esm.mapper.CertificateMapper;
 import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -20,7 +21,8 @@ import java.util.Optional;
 @Repository
 @RequiredArgsConstructor
 public class GiftCertificateRepositoryImpl implements GiftCertificateRepository {
-    private final JdbcTemplate jdbcTemplate;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
     private final TagRepository tagRepository;
     private final CertificateMapper certificateMapper;
     private static final String SQL_CREATE_CERTIFICATE =
@@ -32,6 +34,11 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
     private static final String SQL_UPDATE_CERTIFICATE =
             "update gift_certificate set name = ?, description = ?, price = ?, duration = ? where id = ?";
     private static final String SQL_DELETE_CERTIFICATE = "delete from gift_certificate where id = ?";
+
+    @Override
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @Override// update
     @Transactional // test
@@ -59,7 +66,10 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
 
     @Override
     public Optional<GiftCertificate> findById(Long certificateId) {
-        return jdbcTemplate.query(SQL_READ_CERTIFICATE_BY_ID, certificateMapper, certificateId).stream().findAny();
+        Optional<GiftCertificate> giftCertificateOptional =
+                jdbcTemplate.query(SQL_READ_CERTIFICATE_BY_ID, certificateMapper, certificateId).stream().findAny();
+        giftCertificateOptional.ifPresent(c -> c.setTags(tagRepository.getTagsByCertificateId(certificateId)));
+        return giftCertificateOptional;
     }
 
     @Override
@@ -69,7 +79,7 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
     }
 
     @Override
-    public void delete(long giftCertificateId) {
+    public void delete(Long giftCertificateId) {
         jdbcTemplate.update(SQL_DELETE_CERTIFICATE, giftCertificateId);
     }
 }

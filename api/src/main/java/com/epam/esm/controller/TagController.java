@@ -35,7 +35,7 @@ public class TagController {
     }
 
     @GetMapping("/{tagId}")
-    public TagDto getTagById(@PathVariable("tagId") long tagId) {
+    public TagDto getTagById(@PathVariable("tagId") Long tagId) {
         return tagService.getTagById(tagId);
     }
 
@@ -45,7 +45,7 @@ public class TagController {
     }
 
     @DeleteMapping("/{tagId}")
-    public ResponseEntity<TagDto> deleteTagById(@PathVariable("tagId") long tagId) {
+    public ResponseEntity<TagDto> deleteTagById(@PathVariable("tagId") Long tagId) {
         tagService.deleteTag(tagId);
         return ResponseEntity.noContent().build();
     }

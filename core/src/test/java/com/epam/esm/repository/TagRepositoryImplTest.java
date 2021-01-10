@@ -13,7 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 //@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ContextConfiguration(classes = com.epam.esm.config.DatabaseTestConfig.class)
 @ComponentScan("com.epam.esm")
-@PropertySource("classpath:application.properties")
+@PropertySource("classpath:application-test.properties")
 class TagRepositoryImplTest {
     @Autowired
     TagRepository tagRepository;
