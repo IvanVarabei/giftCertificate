@@ -1,12 +1,12 @@
 create table gift_certificate
 (
-    id               serial                   not null primary key,
-    name             varchar(64)              not null,
+    id               serial         not null primary key,
+    name             varchar(64)    not null,
     description      varchar(512),
-    price            numeric(16, 2)           not null,
-    duration         integer                  not null,
-    create_date      timestamptz not null default (now() at time zone 'utc'),
-    last_update_date timestamptz not null default (now() at time zone 'utc'),
+    price            numeric(16, 2) not null,
+    duration         integer        not null,
+    create_date      timestamptz    not null default (now() at time zone 'utc'),
+    last_update_date timestamptz    not null default (now() at time zone 'utc'),
     constraint unique_certificate_name unique (name),
     constraint positive_price check (price > (0)::numeric)
 );
@@ -24,6 +24,22 @@ create table certificate_tag
     tag_id              integer not null references tag on delete cascade,
     primary key (gift_certificate_id, tag_id)
 );
+
+CREATE OR REPLACE FUNCTION update_updated_date_column()
+    RETURNS TRIGGER AS
+$func$
+BEGIN
+    NEW.last_update_date = (now() at time zone 'utc');
+    RETURN NEW;
+END
+$func$ LANGUAGE plpgsql;
+
+create trigger updated_date_trigger
+    before update
+    on gift_certificate
+    FOR EACH ROW
+EXECUTE function update_updated_date_column();
+
 --ctrl d
 -- create table certificate_tag
 -- (

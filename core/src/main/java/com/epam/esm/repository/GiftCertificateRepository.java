@@ -12,7 +12,7 @@ public interface GiftCertificateRepository {
 
     Optional<GiftCertificate> findById(Long certificateId);
 
-    boolean update(GiftCertificate giftCertificate);
+    void update(GiftCertificate giftCertificate);
 
     boolean delete(long giftCertificateId);
 }

@@ -26,8 +26,14 @@ public class TagRepositoryImpl implements TagRepository {
     private static final String SQL_READ_TAGS = "select id, name from tag";
     private static final String SQL_READ_TAGS_BY_CERTIFICATE_ID =
             "SELECT id, name FROM tag JOIN certificate_tag ON tag.id = tag_id WHERE gift_certificate_id = ?";
+    private static final String SQL_UPDATE_TAG = "update tag set name = ? where id = ?";
     private static final String SQL_DELETE_TAG = "delete from tag where id = ?";
-    private static final String SQL_BIND_TAG = "insert into certificate_tag (gift_certificate_id, tag_id) values (?, ?)";
+    private static final String SQL_BIND_TAG =
+            "insert into certificate_tag (gift_certificate_id, tag_id) values (?, ?)";
+    private static final String SQL_UNBIND_TAG =
+            "delete from certificate_tag where gift_certificate_id = ? and tag_id = ?";
+    private static final String SQL_IS_BOUND =
+            "select exists(select 1 from certificate_tag where gift_certificate_id = ? and tag_id = ?)";
 
     @Override
     public Tag save(Tag tag) {
@@ -57,6 +63,11 @@ public class TagRepositoryImpl implements TagRepository {
     }
 
     @Override
+    public void update(Tag tag) {
+        jdbcTemplate.update(SQL_UPDATE_TAG, tag.getName(), tag.getId());
+    }
+
+    @Override
     public boolean delete(long tageId) {
         return 1 == jdbcTemplate.update(SQL_DELETE_TAG, tageId);
     }
@@ -76,6 +87,12 @@ public class TagRepositoryImpl implements TagRepository {
 
     @Override
     public void unbindWithCertificate(Long certificateId, Long tagId) {
+        jdbcTemplate.update(SQL_UNBIND_TAG, certificateId, tagId);
+    }
 
+    @Override
+    public boolean isBound(long certificateId, Long id) {
+        return jdbcTemplate
+                .queryForObject(SQL_IS_BOUND, new Object[] {certificateId, id}, Boolean.class);
     }
 }

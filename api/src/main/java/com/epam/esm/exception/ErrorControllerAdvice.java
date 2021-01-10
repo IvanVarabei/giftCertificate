@@ -46,4 +46,15 @@ public class ErrorControllerAdvice {
         exceptionDto.setTimestamp(LocalDateTime.now());
         return ResponseEntity.badRequest().body(exceptionDto);
     }
+
+//    @ResponseStatus(INTERNAL_SERVER_ERROR)
+//    @ExceptionHandler(Throwable.class)
+//    ResponseEntity<ExceptionDto> handleException(Throwable e) {
+//        log.error(e.getMessage(), e);
+//        ExceptionDto exceptionDto = new ExceptionDto();
+//        exceptionDto.setErrorMessage(e.getMessage());
+//        exceptionDto.setErrorCode(500);
+//        exceptionDto.setTimestamp(LocalDateTime.now());
+//        return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(exceptionDto);
+//    }
 }

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
 
 @Component
 @RequiredArgsConstructor
@@ -22,6 +24,7 @@ public class CertificateMapper implements RowMapper<GiftCertificate> {
         giftCertificate.setDuration(rs.getInt("duration"));
         giftCertificate.setCreatedDate(rs.getTimestamp("create_date").toLocalDateTime());
         giftCertificate.setUpdatedDate(rs.getTimestamp("last_update_date").toLocalDateTime());
+        giftCertificate.setTags(new ArrayList<>());
         return giftCertificate;
     }
 }
