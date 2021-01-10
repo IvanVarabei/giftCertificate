@@ -69,7 +69,7 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
     }
 
     @Override
-    public boolean delete(long giftCertificateId) {
-        return 1 == jdbcTemplate.update(SQL_DELETE_CERTIFICATE, giftCertificateId);
+    public void delete(long giftCertificateId) {
+        jdbcTemplate.update(SQL_DELETE_CERTIFICATE, giftCertificateId);
     }
 }

@@ -68,8 +68,8 @@ public class TagRepositoryImpl implements TagRepository {
     }
 
     @Override
-    public boolean delete(long tageId) {
-        return 1 == jdbcTemplate.update(SQL_DELETE_TAG, tageId);
+    public void delete(long tageId) {
+        jdbcTemplate.update(SQL_DELETE_TAG, tageId);
     }
 
     @Override

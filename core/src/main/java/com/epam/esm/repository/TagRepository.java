@@ -16,7 +16,7 @@ public interface TagRepository {
 
     void update(Tag tag);
 
-    boolean delete(long tagId);
+    void delete(long tagId);
 
     List<Tag> getTagsByCertificateId(Long id);
 

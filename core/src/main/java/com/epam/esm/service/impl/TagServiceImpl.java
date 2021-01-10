@@ -2,6 +2,7 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.ErrorMessage;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.mapper.TagConverter;
 import com.epam.esm.repository.TagRepository;
@@ -32,14 +33,14 @@ public class TagServiceImpl implements TagService {
     @Override
     public TagDto getTagById(long tagId) {
         return tagConverter.toDTO(tagRepository.findById(tagId).orElseThrow(() ->
-                new ResourceNotFoundException(String.format("Requested resource not found (id = %s)", tagId))));
+                new ResourceNotFoundException(String.format(ErrorMessage.RESOURCE_NOT_FOUND, tagId))));
     }
 
     @Override
     public TagDto updateTag(TagDto tagDto) {
         long tagId = tagDto.getId();
         Tag existed = tagRepository.findById(tagId).orElseThrow(() ->
-                new ResourceNotFoundException(String.format("Requested resource not found (id = %s)", tagId)));
+                new ResourceNotFoundException(String.format(ErrorMessage.RESOURCE_NOT_FOUND, tagId)));
         existed.setName(tagDto.getName());
         tagRepository.update(existed);
         return tagConverter.toDTO(existed);
@@ -47,8 +48,8 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public void deleteTag(long tagId) {
-        tagRepository.findById(tagId).orElseThrow(() ->
-                new ResourceNotFoundException(String.format("Requested resource not found (id = %s)", tagId)));
-        tagRepository.delete(tagId);
+        tagRepository.findById(tagId).ifPresentOrElse(t -> tagRepository.delete(tagId), () -> {
+            throw new ResourceNotFoundException(String.format(ErrorMessage.RESOURCE_NOT_FOUND, tagId));
+        });
     }
 }

@@ -57,7 +57,8 @@ public class CertificateController {
     }
 
     @DeleteMapping("/{certificateId}")
-    public ResponseEntity<?> deleteCertificate(@PathVariable("certificateId") long certificateId) {
+    public ResponseEntity<GiftCertificateDto> deleteCertificate(@PathVariable("certificateId") long certificateId) {
+        giftCertificateService.deleteCertificate(certificateId);
         return ResponseEntity.noContent().build();
     }
 }

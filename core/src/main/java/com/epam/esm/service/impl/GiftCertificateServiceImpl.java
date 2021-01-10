@@ -4,6 +4,7 @@ import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.ErrorMessage;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.mapper.CertificateConverter;
 import com.epam.esm.mapper.TagConverter;
@@ -58,7 +59,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public GiftCertificateDto getCertificateById(long certificateId) {
         return certificateConverter.toDTO(giftCertificateRepository.findById(certificateId).orElseThrow(() ->
-                new ResourceNotFoundException(String.format("Requested resource not found (id = %s)", certificateId))));
+                new ResourceNotFoundException(String.format(ErrorMessage.RESOURCE_NOT_FOUND, certificateId))));
     }
 
     @Override
@@ -66,7 +67,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public GiftCertificateDto updateCertificate(GiftCertificateDto giftCertificateDto) {
         long certificateId = giftCertificateDto.getId();
         GiftCertificate existed = giftCertificateRepository.findById(certificateId).orElseThrow(() ->
-                new ResourceNotFoundException(String.format("Requested resource not found (id = %s)", certificateId)));
+                new ResourceNotFoundException(String.format(ErrorMessage.RESOURCE_NOT_FOUND, certificateId)));
         existed.setTags(tagRepository.getTagsByCertificateId(giftCertificateDto.getId()));
         if (giftCertificateDto.getName() != null) {
             existed.setName(giftCertificateDto.getName());
@@ -80,7 +81,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (giftCertificateDto.getDuration() != existed.getDuration()) {
             existed.setDuration(giftCertificateDto.getDuration());
         }
-        if(giftCertificateDto.getTags() == null){
+        if (giftCertificateDto.getTags() == null) {
             giftCertificateDto.setTags(Collections.emptyList());
         }
         giftCertificateDto.getTags().forEach(t -> {
@@ -96,22 +97,22 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                 existed.getTags().add(tagRepository.findByName(t.getName()).get());
             }
         });
-        List<Tag> copy = new ArrayList<>(existed.getTags());
-        copy.stream()
+        new ArrayList<>(existed.getTags()).stream()
                 .filter(t -> !giftCertificateDto.getTags().stream().map(TagDto::getName)
                         .collect(Collectors.toList()).contains(t.getName()))
                 .forEach(t -> {
                     tagRepository.unbindWithCertificate(existed.getId(), t.getId());
-                    existed.getTags()
-                            .removeIf(inner ->
-                                    t.equals(inner));
+                    existed.getTags().removeIf(t::equals);
                 });
         giftCertificateRepository.update(existed);
         return certificateConverter.toDTO(existed);
     }
 
     @Override
-    public boolean deleteCertificate(long certificateId) {
-        return giftCertificateRepository.delete(certificateId);
+    public void deleteCertificate(long certificateId) {
+        giftCertificateRepository.findById(certificateId)
+                .ifPresentOrElse(t -> giftCertificateRepository.delete(certificateId), () -> {
+                    throw new ResourceNotFoundException(String.format(ErrorMessage.RESOURCE_NOT_FOUND, certificateId));
+                });
     }
 }
