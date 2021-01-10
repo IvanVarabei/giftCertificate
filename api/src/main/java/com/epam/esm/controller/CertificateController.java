@@ -1,24 +1,38 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.SearchCertificateDto;
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.service.GiftCertificateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
 @Slf4j
 @RequestMapping("/api/certificates")
 @RequiredArgsConstructor
+@Validated
 public class CertificateController {
     private final GiftCertificateService giftCertificateService;
 
     @PostMapping
-    public GiftCertificateDto createCertificate(@RequestBody GiftCertificateDto giftCertificateDto) {
-        return giftCertificateService.createCertificate(giftCertificateDto);
+    public ResponseEntity<GiftCertificateDto> createCertificate(
+            @Valid @RequestBody GiftCertificateDto giftCertificateDto,
+            BindingResult bindingResult) {
+        if(bindingResult.hasErrors()){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok().body(giftCertificateService.createCertificate(giftCertificateDto));
     }
 
     @GetMapping
@@ -26,9 +40,15 @@ public class CertificateController {
                                                     @RequestParam(required = false) String name,
                                                     @RequestParam(required = false) String description,
                                                     @RequestParam(required = false) String sortField,
-                                                    @RequestParam(required = false) String sortDirection) {
-
-        return giftCertificateService.getCertificates();
+                                                    @RequestParam(required = false) String sortOrder) {
+        SearchCertificateDto searchCertificateDto = SearchCertificateDto.builder()
+                .tagNames(tagName)
+                .name(name)
+                .description(description)
+                .sortField(sortField)
+                .sortOrder(sortOrder)
+                .build();
+        return giftCertificateService.getCertificates(searchCertificateDto);
         //wrapper
 //        -- select * from gift_certificate where name ilike %'?'%
 //                --                                      or description ilike %'?'%

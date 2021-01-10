@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
@@ -12,6 +13,6 @@ import java.util.Optional;
 @NoArgsConstructor
 public class TagDto {
     private Long id;
-    @NotNull
+    @NotBlank(message = "Name is required")
     private String name;
 }

@@ -1,10 +1,12 @@
 package com.epam.esm.repository.impl;
 
+import com.epam.esm.dto.SearchCertificateDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.mapper.CertificateMapper;
 import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,21 +30,31 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
     private final CertificateMapper certificateMapper;
     private static final String SQL_CREATE_CERTIFICATE =
             "insert into gift_certificate (name, description, price, duration) values (?, ?, ?, ?);";
-    private static final String SQL_READ_CERTIFICATES =
-            "select id, name, description, price, duration, create_date, last_update_date from gift_certificate";
+    private static final String SQL_READ_CERTIFICATES_BASE =
+            "select id, name, description, price, duration, create_date, last_update_date from gift_certificate " +
+                    "where true ";
+    private static final String SQL_READ_CERTIFICATES_TAGS1 = "and id in (SELECT gift_certificate_id FROM " +
+            "certificate_tag LEFT JOIN tag ON tag_id = tag.id WHERE tag.name IN (";
+    private static final String SQL_READ_CERTIFICATES_TAGS2 = ") " +
+            "GROUP BY gift_certificate_id HAVING COUNT(tag_id) = ?)";
+    private static final String SQL_NAME_FILTER = "and name ilike '%";
+    private static final String SQL_DESCRIPTION_FILTER = "and description ilike '%";
+    private static final String SQL_SORT_FIELD = "order by ";
+    private static final String SQL_DESC = "desc";
     private static final String SQL_READ_CERTIFICATE_BY_ID = "select id, name, description, price, duration, " +
             "create_date, last_update_date from gift_certificate where id = ?";
     private static final String SQL_UPDATE_CERTIFICATE =
             "update gift_certificate set name = ?, description = ?, price = ?, duration = ? where id = ?";
     private static final String SQL_DELETE_CERTIFICATE = "delete from gift_certificate where id = ?";
+    private static final String BLANK = " ";
 
     @Override
     public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    @Override// update
-    @Transactional // test
+    @Override
+    @Transactional
     public GiftCertificate save(GiftCertificate giftCertificate) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -59,9 +72,39 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
         return giftCertificate;
     }
 
+    // the whole query in file V5__search_certificates.sql
     @Override
-    public List<GiftCertificate> findAll() {
-        return jdbcTemplate.query(SQL_READ_CERTIFICATES, certificateMapper);
+    public List<GiftCertificate> findAll(SearchCertificateDto searchDto) {
+        StringBuilder sb = new StringBuilder(SQL_READ_CERTIFICATES_BASE);
+        List<String> tags = searchDto.getTagNames();
+        List queryParams = new ArrayList<>();           // heap pollution, ok?
+        if (tags != null && !tags.isEmpty()) {
+            sb.append(SQL_READ_CERTIFICATES_TAGS1)
+                    .append("?, ".repeat(tags.size() - 1))
+                    .append("?")
+                    .append(SQL_READ_CERTIFICATES_TAGS2);
+            queryParams.addAll(tags);
+            queryParams.add(tags.size());
+        }
+        if (!Strings.isBlank(searchDto.getName())) {
+            sb.append(SQL_NAME_FILTER)
+                    .append(searchDto.getName())
+                    .append("%' ");
+        }
+        if (!Strings.isBlank(searchDto.getDescription())) {
+            sb.append(SQL_DESCRIPTION_FILTER)
+                    .append(searchDto.getDescription())
+                    .append("%' ");
+        }
+        if (!Strings.isBlank(searchDto.getSortField())) {
+            sb.append(SQL_SORT_FIELD)
+                    .append(searchDto.getSortField())
+                    .append(BLANK);
+            if (SQL_DESC.equals(searchDto.getSortOrder())) {
+                sb.append(SQL_DESC);
+            }
+        }
+        return jdbcTemplate.query(sb.toString(), certificateMapper, queryParams.toArray());
     }
 
     @Override

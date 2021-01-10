@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class TagController {
     private final TagService tagService;
 
     @PostMapping
-    public ResponseEntity<TagDto> createTag(@RequestBody TagDto tagDto) {
+    public ResponseEntity<TagDto> createTag(@RequestBody @Valid TagDto tagDto) {
         TagDto createdTagDto = tagService.createTag(tagDto);
         URI locationUri = ServletUriComponentsBuilder
                 .fromCurrentRequest()

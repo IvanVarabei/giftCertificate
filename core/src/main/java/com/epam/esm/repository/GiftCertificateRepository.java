@@ -1,5 +1,6 @@
 package com.epam.esm.repository;
 
+import com.epam.esm.dto.SearchCertificateDto;
 import com.epam.esm.entity.GiftCertificate;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -11,7 +12,7 @@ public interface GiftCertificateRepository {
 
     GiftCertificate save(GiftCertificate giftCertificate);
 
-    List<GiftCertificate> findAll();
+    List<GiftCertificate> findAll(SearchCertificateDto searchDto);
 
     Optional<GiftCertificate> findById(Long certificateId);
 
