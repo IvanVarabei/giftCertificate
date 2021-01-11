@@ -15,7 +15,7 @@ public class GiftCertificate extends BaseEntity {
     private String name;
     private String description;
     private BigDecimal price;
-    private int duration;
+    private Integer duration;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
     private List<Tag> tags;

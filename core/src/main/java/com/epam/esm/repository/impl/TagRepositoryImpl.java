@@ -32,6 +32,7 @@ public class TagRepositoryImpl implements TagRepository {
             "insert into certificate_tag (gift_certificate_id, tag_id) values (?, ?)";
     private static final String SQL_UNBIND_TAG =
             "delete from certificate_tag where gift_certificate_id = ? and tag_id = ?";
+    private static final String SQL_UNBIND_ALL = "delete from certificate_tag where gift_certificate_id = ?";
     private static final String SQL_IS_BOUND =
             "select exists(select 1 from certificate_tag where gift_certificate_id = ? and tag_id = ?)";
 
@@ -88,6 +89,11 @@ public class TagRepositoryImpl implements TagRepository {
     @Override
     public void unbindWithCertificate(Long certificateId, Long tagId) {
         jdbcTemplate.update(SQL_UNBIND_TAG, certificateId, tagId);
+    }
+
+    @Override
+    public void unbindAllTags(Long certificateId){
+        jdbcTemplate.update(SQL_UNBIND_ALL, certificateId);
     }
 
     @Override
