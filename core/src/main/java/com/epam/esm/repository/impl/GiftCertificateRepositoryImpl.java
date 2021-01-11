@@ -25,7 +25,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class GiftCertificateRepositoryImpl implements GiftCertificateRepository {
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
     private final TagRepository tagRepository;
     private final CertificateMapper certificateMapper;
     private static final String SQL_CREATE_CERTIFICATE =
@@ -47,11 +47,6 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
             "update gift_certificate set name = ?, description = ?, price = ?, duration = ? where id = ?";
     private static final String SQL_DELETE_CERTIFICATE = "delete from gift_certificate where id = ?";
     private static final String BLANK = " ";
-
-    @Override
-    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     @Override
     @Transactional

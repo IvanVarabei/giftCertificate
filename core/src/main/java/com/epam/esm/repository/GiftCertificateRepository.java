@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface GiftCertificateRepository {
-    void setJdbcTemplate(JdbcTemplate jdbcTemplate);
-
     GiftCertificate save(GiftCertificate giftCertificate);
 
     List<GiftCertificate> findAll(SearchCertificateDto searchDto);
