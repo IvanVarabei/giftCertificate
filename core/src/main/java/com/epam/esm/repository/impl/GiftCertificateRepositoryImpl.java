@@ -117,8 +117,19 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
 
     @Override
     public void update(GiftCertificate giftCertificate) {
-        jdbcTemplate.update(SQL_UPDATE_CERTIFICATE, giftCertificate.getName(), giftCertificate.getDescription(),
-                giftCertificate.getPrice(), giftCertificate.getDuration(), giftCertificate.getId());
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_CERTIFICATE,
+                    Statement.RETURN_GENERATED_KEYS);
+            int index = 1;
+            preparedStatement.setString(index++, giftCertificate.getName());
+            preparedStatement.setString(index++, giftCertificate.getDescription());
+            preparedStatement.setBigDecimal(index++, giftCertificate.getPrice());
+            preparedStatement.setInt(index++, giftCertificate.getDuration());
+            preparedStatement.setLong(index, giftCertificate.getId());
+            return preparedStatement;
+        }, keyHolder);
+        giftCertificate.setUpdatedDate(((Timestamp) (keyHolder.getKeys().get("last_update_date"))).toLocalDateTime());
     }
 
     @Override
