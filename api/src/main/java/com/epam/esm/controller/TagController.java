@@ -1,10 +1,13 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.TagDto;
+import com.epam.esm.exception.CustomValidationError;
 import com.epam.esm.service.TagService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -20,7 +23,10 @@ public class TagController {
     private final TagService tagService;
 
     @PostMapping
-    public ResponseEntity<TagDto> createTag(@RequestBody @Valid TagDto tagDto) {
+    public ResponseEntity<TagDto> createTag(@RequestBody @Valid TagDto tagDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new CustomValidationError(bindingResult);
+        }
         TagDto createdTagDto = tagService.createTag(tagDto);
         URI locationUri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -40,6 +46,7 @@ public class TagController {
         return tagService.getTagById(tagId);
     }
 
+    // We actually won't update tags
     @PutMapping
     public TagDto updateTag(@RequestBody TagDto tagDto) {
         return tagService.updateTag(tagDto);

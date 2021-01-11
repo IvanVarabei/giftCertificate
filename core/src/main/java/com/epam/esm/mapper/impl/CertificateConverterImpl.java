@@ -67,7 +67,7 @@ public class CertificateConverterImpl implements CertificateConverter {
     @Override
     public List<Tag> toEntities(List<TagDto> tagsDto) {
         if (tagsDto == null) {
-            return Collections.emptyList();
+            return null;
         }
 
         List<Tag> list = new ArrayList<Tag>(tagsDto.size());

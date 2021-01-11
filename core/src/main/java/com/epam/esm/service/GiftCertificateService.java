@@ -8,7 +8,6 @@ import java.util.List;
 public interface GiftCertificateService {
     GiftCertificateDto createCertificate(GiftCertificateDto giftCertificateDto);
 
-    //crtl alt <-
     List<GiftCertificateDto> getCertificates(SearchCertificateDto searchDto);
 
     GiftCertificateDto getCertificateById(Long certificateId);

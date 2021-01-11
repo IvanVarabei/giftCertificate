@@ -8,7 +8,6 @@ import com.epam.esm.exception.ErrorMessage;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.mapper.CertificateConverter;
 import com.epam.esm.repository.GiftCertificateRepository;
-import com.epam.esm.repository.TagRepository;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +30,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         GiftCertificate createdCertificate = certificateConverter.toEntity(giftCertificateDto);
         createdCertificate.setId(null);
         giftCertificateRepository.save(createdCertificate);
-        List<Tag> tags = tagService.processTags(createdCertificate);
+        List<Tag> tags = tagService.bindTags(createdCertificate);
         createdCertificate.setTags(tags);
         return certificateConverter.toDTO(createdCertificate);
     }
@@ -65,7 +64,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         existed.setUpdatedDate(LocalDateTime.now());
         giftCertificateRepository.update(existed);
         tagService.unbindTagsFromCertificate(existed.getId());
-        existed.setTags(tagService.processTags(update));
+        existed.setTags(tagService.bindTags(update));
         return certificateConverter.toDTO(existed);
     }
 

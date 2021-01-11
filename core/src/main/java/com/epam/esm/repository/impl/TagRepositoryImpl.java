@@ -85,7 +85,7 @@ public class TagRepositoryImpl implements TagRepository {
     }
 
     @Override
-    public void unbindTagsFromCertificate(Long certificateId){
+    public void unbindTagsFromCertificate(Long certificateId) {
         jdbcTemplate.update(SQL_UNBIND_TAGS, certificateId);
     }
 }

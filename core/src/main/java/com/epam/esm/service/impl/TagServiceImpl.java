@@ -56,24 +56,19 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<Tag> processTags(GiftCertificate certificate) {
-        if (certificate.getTags() != null) {
-            certificate.getTags().forEach(t -> {
-                Optional<Tag> tagOptional = tagRepository.findByName(t.getName());
-                if (tagOptional.isEmpty()) {
-                    t.setId(null);
-                    tagRepository.save(t);
-                } else {
-                    Tag existedTag = tagOptional.get();
-                    t.setId(existedTag.getId()); //usually do not need
-                    existedTag.setName(t.getName());
-                    tagRepository.update(existedTag);
-                }
-                tagRepository.bindWithCertificate(certificate.getId(), t.getId());
-            });
-            return certificate.getTags();
-        }
-        return null;
+    public List<Tag> bindTags(GiftCertificate certificate) {
+        certificate.getTags().forEach(t -> {
+            Optional<Tag> tagOptional = tagRepository.findByName(t.getName());
+            if (tagOptional.isEmpty()) {
+                t.setId(null);
+                tagRepository.save(t);
+            } else {
+                Tag existedTag = tagOptional.get();
+                t.setId(existedTag.getId());
+            }
+            tagRepository.bindWithCertificate(certificate.getId(), t.getId());
+        });
+        return certificate.getTags();
     }
 
     @Override
@@ -82,7 +77,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<Tag> getTagsByCertificateId(Long certificateId){
+    public List<Tag> getTagsByCertificateId(Long certificateId) {
         return tagRepository.getTagsByCertificateId(certificateId);
     }
 }

@@ -2,6 +2,7 @@ package com.epam.esm.controller;
 
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.SearchCertificateDto;
+import com.epam.esm.exception.CustomValidationError;
 import com.epam.esm.service.GiftCertificateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.CREATED;
+
 @RestController
 @Slf4j
 @RequestMapping("/api/certificates")
@@ -21,20 +24,20 @@ public class CertificateController {
 
     @PostMapping
     public ResponseEntity<GiftCertificateDto> createCertificate(
-            @Valid @RequestBody GiftCertificateDto giftCertificateDto,
-            BindingResult bindingResult) {
+            @Valid @RequestBody GiftCertificateDto giftCertificateDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().build();
+            throw new CustomValidationError(bindingResult);
         }
-        return ResponseEntity.ok().body(giftCertificateService.createCertificate(giftCertificateDto));
+        return ResponseEntity.status(CREATED).body(giftCertificateService.createCertificate(giftCertificateDto));
     }
 
     @GetMapping
-    public List<GiftCertificateDto> getCertificates(@RequestParam(required = false) List<String> tagName,
-                                                    @RequestParam(required = false) String name,
-                                                    @RequestParam(required = false) String description,
-                                                    @RequestParam(required = false) String sortField,
-                                                    @RequestParam(required = false) String sortOrder) {
+    public List<GiftCertificateDto> getCertificates(
+            @RequestParam(required = false) List<String> tagName,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String description,
+            @RequestParam(required = false) String sortField,
+            @RequestParam(required = false) String sortOrder) {
         SearchCertificateDto searchCertificateDto = SearchCertificateDto.builder()
                 .tagNames(tagName)
                 .name(name)
@@ -51,7 +54,11 @@ public class CertificateController {
     }
 
     @PutMapping
-    public GiftCertificateDto updateCertificate(@RequestBody GiftCertificateDto giftCertificateDto) {
+    public GiftCertificateDto updateCertificate(
+            @Valid @RequestBody GiftCertificateDto giftCertificateDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new CustomValidationError(bindingResult);
+        }
         return giftCertificateService.updateCertificate(giftCertificateDto);
     }
 
