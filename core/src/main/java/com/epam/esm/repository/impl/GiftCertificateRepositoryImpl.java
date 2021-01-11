@@ -6,7 +6,7 @@ import com.epam.esm.mapper.CertificateMapper;
 import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.util.Strings;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -86,17 +86,17 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
             queryParams.addAll(tags);
             queryParams.add(tags.size());
         }
-        if (!Strings.isBlank(searchDto.getName())) {
+        if (!StringUtils.isBlank(searchDto.getName())) {
             sb.append(SQL_NAME_FILTER)
                     .append(searchDto.getName())
                     .append("%' ");
         }
-        if (!Strings.isBlank(searchDto.getDescription())) {
+        if (!StringUtils.isBlank(searchDto.getDescription())) {
             sb.append(SQL_DESCRIPTION_FILTER)
                     .append(searchDto.getDescription())
                     .append("%' ");
         }
-        if (!Strings.isBlank(searchDto.getSortField())) {
+        if (!StringUtils.isBlank(searchDto.getSortField())) {
             sb.append(SQL_SORT_FIELD)
                     .append(searchDto.getSortField())
                     .append(BLANK);
@@ -109,27 +109,13 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
 
     @Override
     public Optional<GiftCertificate> findById(Long certificateId) {
-        Optional<GiftCertificate> giftCertificateOptional =
-                jdbcTemplate.query(SQL_READ_CERTIFICATE_BY_ID, certificateMapper, certificateId).stream().findAny();
-        giftCertificateOptional.ifPresent(c -> c.setTags(tagRepository.getTagsByCertificateId(certificateId)));
-        return giftCertificateOptional;
+        return jdbcTemplate.query(SQL_READ_CERTIFICATE_BY_ID, certificateMapper, certificateId).stream().findAny();
     }
 
     @Override
     public void update(GiftCertificate giftCertificate) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(connection -> {
-            PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_CERTIFICATE,
-                    Statement.RETURN_GENERATED_KEYS);
-            int index = 1;
-            preparedStatement.setString(index++, giftCertificate.getName());
-            preparedStatement.setString(index++, giftCertificate.getDescription());
-            preparedStatement.setBigDecimal(index++, giftCertificate.getPrice());
-            preparedStatement.setInt(index++, giftCertificate.getDuration());
-            preparedStatement.setLong(index, giftCertificate.getId());
-            return preparedStatement;
-        }, keyHolder);
-        giftCertificate.setUpdatedDate(((Timestamp) (keyHolder.getKeys().get("last_update_date"))).toLocalDateTime());
+        jdbcTemplate.update(SQL_UPDATE_CERTIFICATE, giftCertificate.getName(), giftCertificate.getDescription(),
+                giftCertificate.getPrice(), giftCertificate.getDuration(), giftCertificate.getId());
     }
 
     @Override

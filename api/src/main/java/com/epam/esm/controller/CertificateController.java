@@ -21,7 +21,7 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/api/certificates")
 @RequiredArgsConstructor
-@Validated
+//@Validated
 public class CertificateController {
     private final GiftCertificateService giftCertificateService;
 

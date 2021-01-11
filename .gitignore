@@ -9,7 +9,7 @@ api/out/
 core/build/
 core/out/
 out/
-catalina/
+catalina.home_IS_UNDEFINED/
 
 
 

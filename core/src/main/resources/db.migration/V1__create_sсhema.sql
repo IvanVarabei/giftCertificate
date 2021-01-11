@@ -24,36 +24,3 @@ create table certificate_tag
     tag_id              integer not null references tag on delete cascade,
     primary key (gift_certificate_id, tag_id)
 );
-
-CREATE OR REPLACE FUNCTION update_updated_date_column()
-    RETURNS TRIGGER AS
-$func$
-BEGIN
-    NEW.last_update_date = (now() at time zone 'utc');
-    RETURN NEW;
-END
-$func$ LANGUAGE plpgsql;
-
-create trigger updated_date_trigger
-    before update
-    on gift_certificate
-    FOR EACH ROW
-EXECUTE function update_updated_date_column();
-
---ctrl d
--- create table certificate_tag
--- (
---     gift_certificate_id integer not null,
---     tag_id              integer not null references tag,
---     constraint gift_certificate_id_fkey
---         foreign key (gift_certificate_id)
---             references gift_certificate (id)
---             on delete cascade,
---     constraint tag_id_fkey
---         foreign key (tag_id)
---             references tag (id)
---             on delete cascade,
---     constraint gift_certificate_tag_pkey
---         primary key (gift_certificate_id, tag_id)
--- );
-

@@ -22,9 +22,5 @@ public interface TagRepository {
 
     void bindWithCertificate(Long certificateId, Long tagId);
 
-    void unbindWithCertificate(Long certificateId, Long tagId);
-
-    void unbindAllTags(Long certificateId);
-
-    boolean isBound(Long certificateId, Long id);
+    void unbindTagsFromCertificate(Long certificateId);
 }
