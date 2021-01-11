@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -61,6 +62,16 @@ public class ErrorControllerAdvice {
             exceptionDtoWrapper.getErrors().add(exceptionDto);
         });
         return ResponseEntity.badRequest().body(exceptionDtoWrapper);
+    }
+
+    // @PathVariable validation
+    @ExceptionHandler(ConstraintViolationException.class)
+    ResponseEntity<ExceptionDto> handleException(ConstraintViolationException ex) {
+        ExceptionDto exceptionDto = new ExceptionDto();
+        exceptionDto.setErrorMessage(ex.getMessage());
+        exceptionDto.setErrorCode(400);
+        exceptionDto.setTimestamp(LocalDateTime.now());
+        return ResponseEntity.badRequest().body(exceptionDto);
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)

@@ -4,13 +4,16 @@ import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.SearchCertificateDto;
 import com.epam.esm.exception.CustomValidationError;
 import com.epam.esm.service.GiftCertificateService;
+import com.epam.esm.validator.CustomEitherNullOrLengthGraterThan1;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -19,6 +22,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 @Slf4j
 @RequestMapping("/api/certificates")
 @RequiredArgsConstructor
+@Validated // for @PathVariable
 public class CertificateController {
     private final GiftCertificateService giftCertificateService;
 
@@ -34,8 +38,8 @@ public class CertificateController {
     @GetMapping
     public List<GiftCertificateDto> getCertificates(
             @RequestParam(required = false) List<String> tagName,
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String description,
+            @RequestParam(required = false) @CustomEitherNullOrLengthGraterThan1 String name,
+            @RequestParam(required = false) @CustomEitherNullOrLengthGraterThan1 String description,
             @RequestParam(required = false) String sortField,
             @RequestParam(required = false) String sortOrder) {
         SearchCertificateDto searchCertificateDto = SearchCertificateDto.builder()
@@ -49,7 +53,7 @@ public class CertificateController {
     }
 
     @GetMapping("/{certificateId}")
-    public GiftCertificateDto getCertificateById(@PathVariable("certificateId") Long certificateId) {
+    public GiftCertificateDto getCertificateById(@PathVariable("certificateId") @Min(1) Long certificateId) {
         return giftCertificateService.getCertificateById(certificateId);
     }
 
@@ -63,7 +67,8 @@ public class CertificateController {
     }
 
     @DeleteMapping("/{certificateId}")
-    public ResponseEntity<GiftCertificateDto> deleteCertificate(@PathVariable("certificateId") Long certificateId) {
+    public ResponseEntity<GiftCertificateDto> deleteCertificate(
+            @PathVariable("certificateId") @Min(1) Long certificateId) {
         giftCertificateService.deleteCertificate(certificateId);
         return ResponseEntity.noContent().build();
     }
