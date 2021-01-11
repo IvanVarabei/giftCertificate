@@ -1,0 +1,1 @@
+drop table certificate_tag, gift_certificate, tag;

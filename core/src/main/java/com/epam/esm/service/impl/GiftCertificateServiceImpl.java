@@ -8,6 +8,7 @@ import com.epam.esm.exception.ErrorMessage;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.mapper.CertificateConverter;
 import com.epam.esm.repository.GiftCertificateRepository;
+import com.epam.esm.repository.TagRepository;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +22,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class GiftCertificateServiceImpl implements GiftCertificateService {
-    private final TagService tagService;
     private final GiftCertificateRepository giftCertificateRepository;
+    private final TagService tagService;
     private final CertificateConverter certificateConverter;
 
     @Override
