@@ -26,6 +26,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private final CertificateConverter certificateConverter;
 
     @Override
+    @Transactional
     public GiftCertificateDto createCertificate(GiftCertificateDto giftCertificateDto) {
         GiftCertificate createdCertificate = certificateConverter.toEntity(giftCertificateDto);
         createdCertificate.setId(null);
@@ -69,6 +70,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
+    @Transactional
     public void deleteCertificate(Long certificateId) {
         giftCertificateRepository.findById(certificateId)
                 .ifPresentOrElse(t -> giftCertificateRepository.delete(certificateId), () -> {

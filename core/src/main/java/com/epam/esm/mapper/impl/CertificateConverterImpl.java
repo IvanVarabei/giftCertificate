@@ -10,56 +10,55 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Component
 public class CertificateConverterImpl implements CertificateConverter {
 
     @Override
-    public GiftCertificateDto toDTO(GiftCertificate artifact) {
-        if (artifact == null) {
+    public GiftCertificateDto toDTO(GiftCertificate certificate) {
+        if (certificate == null) {
             return null;
         }
 
         GiftCertificateDto giftCertificateDto = new GiftCertificateDto();
 
-        giftCertificateDto.setId(artifact.getId());
-        giftCertificateDto.setName(artifact.getName());
-        giftCertificateDto.setDescription(artifact.getDescription());
-        giftCertificateDto.setPrice(artifact.getPrice());
-        giftCertificateDto.setDuration(artifact.getDuration());
-        if (artifact.getCreatedDate() != null) {
-            giftCertificateDto.setCreatedDate(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(artifact.getCreatedDate()));
+        giftCertificateDto.setId(certificate.getId());
+        giftCertificateDto.setName(certificate.getName());
+        giftCertificateDto.setDescription(certificate.getDescription());
+        giftCertificateDto.setPrice(certificate.getPrice());
+        giftCertificateDto.setDuration(certificate.getDuration());
+        if (certificate.getCreatedDate() != null) {
+            giftCertificateDto.setCreatedDate(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(certificate.getCreatedDate()));
         }
-        if (artifact.getUpdatedDate() != null) {
-            giftCertificateDto.setUpdatedDate(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(artifact.getUpdatedDate()));
+        if (certificate.getUpdatedDate() != null) {
+            giftCertificateDto.setUpdatedDate(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(certificate.getUpdatedDate()));
         }
-        giftCertificateDto.setTags(toDTOs(artifact.getTags()));
+        giftCertificateDto.setTags(toDTOs(certificate.getTags()));
 
         return giftCertificateDto;
     }
 
     @Override
-    public GiftCertificate toEntity(GiftCertificateDto dto) {
-        if (dto == null) {
+    public GiftCertificate toEntity(GiftCertificateDto giftCertificateDto) {
+        if (giftCertificateDto == null) {
             return null;
         }
 
         GiftCertificate giftCertificate = new GiftCertificate();
 
-        giftCertificate.setId(dto.getId());
-        giftCertificate.setName(dto.getName());
-        giftCertificate.setDescription(dto.getDescription());
-        giftCertificate.setPrice(dto.getPrice());
-        giftCertificate.setDuration(dto.getDuration());
-        if (dto.getCreatedDate() != null) {
-            giftCertificate.setCreatedDate(LocalDateTime.parse(dto.getCreatedDate()));
+        giftCertificate.setId(giftCertificateDto.getId());
+        giftCertificate.setName(giftCertificateDto.getName());
+        giftCertificate.setDescription(giftCertificateDto.getDescription());
+        giftCertificate.setPrice(giftCertificateDto.getPrice());
+        giftCertificate.setDuration(giftCertificateDto.getDuration());
+        if (giftCertificateDto.getCreatedDate() != null) {
+            giftCertificate.setCreatedDate(LocalDateTime.parse(giftCertificateDto.getCreatedDate()));
         }
-        if (dto.getUpdatedDate() != null) {
-            giftCertificate.setUpdatedDate(LocalDateTime.parse(dto.getUpdatedDate()));
+        if (giftCertificateDto.getUpdatedDate() != null) {
+            giftCertificate.setUpdatedDate(LocalDateTime.parse(giftCertificateDto.getUpdatedDate()));
         }
-        giftCertificate.setTags(toEntities(dto.getTags()));
+        giftCertificate.setTags(toEntities(giftCertificateDto.getTags()));
 
         return giftCertificate;
     }
@@ -70,7 +69,7 @@ public class CertificateConverterImpl implements CertificateConverter {
             return null;
         }
 
-        List<Tag> list = new ArrayList<Tag>(tagsDto.size());
+        List<Tag> list = new ArrayList<>(tagsDto.size());
         for (TagDto tagDto : tagsDto) {
             list.add(tagDtoToTag(tagDto));
         }
@@ -84,7 +83,7 @@ public class CertificateConverterImpl implements CertificateConverter {
             return null;
         }
 
-        List<TagDto> list = new ArrayList<TagDto>(tags.size());
+        List<TagDto> list = new ArrayList<>(tags.size());
         for (Tag tag : tags) {
             list.add(tagToTagDto(tag));
         }

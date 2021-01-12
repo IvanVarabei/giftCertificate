@@ -20,16 +20,25 @@ import java.util.Optional;
 public class TagRepositoryImpl implements TagRepository {
     private final JdbcTemplate jdbcTemplate;
     private final TagMapper tagMapper;
+
     private static final String SQL_CREATE_TAG = "insert into tag (name) values (?)";
+
     private static final String SQL_READ_TAG_BY_ID = "select id, name from tag where id = ?";
+
     private static final String SQL_READ_TAG_BY_NAME = "select id, name from tag where name = ?";
+
     private static final String SQL_READ_TAGS = "select id, name from tag";
+
     private static final String SQL_READ_TAGS_BY_CERTIFICATE_ID =
             "SELECT id, name FROM tag JOIN certificate_tag ON tag.id = tag_id WHERE gift_certificate_id = ?";
+
     private static final String SQL_UPDATE_TAG = "update tag set name = ? where id = ?";
+
     private static final String SQL_DELETE_TAG = "delete from tag where id = ?";
+
     private static final String SQL_BIND_TAG =
             "insert into certificate_tag (gift_certificate_id, tag_id) values (?, ?)";
+
     private static final String SQL_UNBIND_TAGS = "delete from certificate_tag where gift_certificate_id = ?";
 
     @Override

@@ -24,24 +24,36 @@ import java.util.Optional;
 public class GiftCertificateRepositoryImpl implements GiftCertificateRepository {
     private final JdbcTemplate jdbcTemplate;
     private final CertificateMapper certificateMapper;
+
     private static final String SQL_CREATE_CERTIFICATE =
             "insert into gift_certificate (name, description, price, duration) values (?, ?, ?, ?);";
+
     private static final String SQL_READ_CERTIFICATES_BASE =
             "select id, name, description, price, duration, create_date, last_update_date from gift_certificate " +
                     "where true ";
+
     private static final String SQL_READ_CERTIFICATES_TAGS1 = "and id in (SELECT gift_certificate_id FROM " +
             "certificate_tag LEFT JOIN tag ON tag_id = tag.id WHERE tag.name IN (";
+
     private static final String SQL_READ_CERTIFICATES_TAGS2 = ") " +
             "GROUP BY gift_certificate_id HAVING COUNT(tag_id) = ?)";
+
     private static final String SQL_NAME_FILTER = "and name ilike '%";
+
     private static final String SQL_DESCRIPTION_FILTER = "and description ilike '%";
+
     private static final String SQL_SORT_FIELD = "order by ";
+
     private static final String SQL_DESC = "desc";
+
     private static final String SQL_READ_CERTIFICATE_BY_ID = "select id, name, description, price, duration, " +
             "create_date, last_update_date from gift_certificate where id = ?";
+
     private static final String SQL_UPDATE_CERTIFICATE =
             "update gift_certificate set name = ?, description = ?, price = ?, duration = ? where id = ?";
+
     private static final String SQL_DELETE_CERTIFICATE = "delete from gift_certificate where id = ?";
+
     private static final String BLANK = " ";
 
 
