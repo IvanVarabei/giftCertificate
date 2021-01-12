@@ -18,6 +18,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -33,8 +35,8 @@ public class ErrorControllerAdvice {
     @ExceptionHandler
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ExceptionDtoWrapper> handle(MethodArgumentNotValidException ex) {
-        ExceptionDtoWrapper exceptionDtoWrapper = new ExceptionDtoWrapper();
+    public ResponseEntity<List<ExceptionDto>> handle(MethodArgumentNotValidException ex) {
+        List<ExceptionDto> exceptionDtoList = new ArrayList<>();
         ex.getBindingResult().getAllErrors().forEach(error -> {
             String errorMessage = error.getDefaultMessage();
             String fieldName = ((FieldError) error).getField();
@@ -42,9 +44,9 @@ public class ErrorControllerAdvice {
             exceptionDto.setErrorMessage(String.format("%s - %s", fieldName, errorMessage));
             exceptionDto.setErrorCode(400);
             exceptionDto.setTimestamp(LocalDateTime.now());
-            exceptionDtoWrapper.getErrors().add(exceptionDto);
+            exceptionDtoList.add(exceptionDto);
         });
-        return ResponseEntity.badRequest().body(exceptionDtoWrapper);
+        return ResponseEntity.badRequest().body(exceptionDtoList);
     }
 
     /**
@@ -53,8 +55,8 @@ public class ErrorControllerAdvice {
     @ExceptionHandler
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ExceptionDtoWrapper> handle(ConstraintViolationException ex) {
-        ExceptionDtoWrapper exceptionDtoWrapper = new ExceptionDtoWrapper();
+    public ResponseEntity<List<ExceptionDto>> handle(ConstraintViolationException ex) {
+        List<ExceptionDto> exceptionDtoList = new ArrayList<>();
         ex.getConstraintViolations()
                 .forEach(e -> {
                     String className = e.getRootBeanClass().getSimpleName();
@@ -66,9 +68,9 @@ public class ErrorControllerAdvice {
                     exceptionDto.setErrorMessage(fullMessage);
                     exceptionDto.setErrorCode(400);
                     exceptionDto.setTimestamp(LocalDateTime.now());
-                    exceptionDtoWrapper.getErrors().add(exceptionDto);
+                    exceptionDtoList.add(exceptionDto);
                 });
-        return ResponseEntity.badRequest().body(exceptionDtoWrapper);
+        return ResponseEntity.badRequest().body(exceptionDtoList);
     }
 
     /**
