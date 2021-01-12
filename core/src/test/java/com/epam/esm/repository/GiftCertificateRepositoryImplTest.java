@@ -28,7 +28,7 @@ class GiftCertificateRepositoryImplTest {
     @Test
     void should_id_not_be_null_when_save() {
         GiftCertificate certificate = new GiftCertificate();
-        certificate.setName("name test 1");
+        certificate.setName("name test 11");
         certificate.setDescription("description test 1");
         certificate.setPrice(new BigDecimal(100));
         certificate.setDuration(5);
