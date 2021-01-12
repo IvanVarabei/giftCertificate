@@ -13,6 +13,12 @@ public class NonRequiredAnnotationValidator implements ConstraintValidator<NonRe
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext cxt) {
-        return value == null || value.matches(regex);
+        if (value == null || value.matches(regex)) {
+            return true;
+        }
+        cxt.disableDefaultConstraintViolation();
+        cxt.buildConstraintViolationWithTemplate(String.format("Must be either null or match the pattern : %s", regex))
+                .addConstraintViolation();
+        return false;
     }
 }

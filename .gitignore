@@ -1,17 +1,26 @@
-.gradle/
-.idea/
 *.log
+.idea/
+.gradle/
 gradle/
 gradlew
 gradlew.bat
+
 build/
+out/
+
 api/build/
 api/out/
+api/src/main/generated/
+api/src/test/generated_test/
+
 core/build/
 core/out/
-out/
+core/src/main/generated/
+core/src/test/generated_test/
+
+core/catalina.home_IS_UNDEFINED/
 catalina.home_IS_UNDEFINED/
-generated/
+
 
 
 

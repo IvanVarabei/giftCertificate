@@ -19,7 +19,7 @@ import static java.lang.annotation.ElementType.TYPE_USE;
 @Target({PARAMETER, TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NonRequired {
-    String message() default "Must be either null or match the pattern";
+    String message() default "";
 
     String regex() default ".*";
 
