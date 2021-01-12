@@ -8,7 +8,7 @@ import java.util.List;
 @Builder
 @Data
 public class SearchCertificateDto {
-    List<String> tagNames;
+    private List<String> tagNames;
     private String name;
     private String description;
     private String sortField;

@@ -1,10 +1,7 @@
 package com.epam.esm.config;
 
-import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
 
 public class AppDispatcherServletInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
@@ -24,13 +21,8 @@ public class AppDispatcherServletInitializer extends AbstractAnnotationConfigDis
     }
 
     @Override
-    public void onStartup(ServletContext servletContext) {
-        AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
-        ctx.register(WebMvcConfig.class);
-        ctx.setServletContext(servletContext);
-        ServletRegistration.Dynamic servlet = servletContext.addServlet("dispatcher", new DispatcherServlet(ctx));
-        servlet.addMapping("/");
-        servlet.setLoadOnStartup(1);
-        servlet.setInitParameter("throwExceptionIfNoHandlerFound", "true");
+    public void customizeRegistration(ServletRegistration.Dynamic registration) {
+        registration.setInitParameter("throwExceptionIfNoHandlerFound", "true");
+        super.customizeRegistration(registration);
     }
 }

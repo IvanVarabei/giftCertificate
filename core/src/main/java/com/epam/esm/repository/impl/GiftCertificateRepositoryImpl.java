@@ -24,9 +24,7 @@ import java.util.Optional;
 @Repository
 @RequiredArgsConstructor
 public class GiftCertificateRepositoryImpl implements GiftCertificateRepository {
-    @Autowired
     private final JdbcTemplate jdbcTemplate;
-    private final TagRepository tagRepository;
     private final CertificateMapper certificateMapper;
     private static final String SQL_CREATE_CERTIFICATE =
             "insert into gift_certificate (name, description, price, duration) values (?, ?, ?, ?);";
@@ -48,6 +46,7 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
     private static final String SQL_DELETE_CERTIFICATE = "delete from gift_certificate where id = ?";
     private static final String BLANK = " ";
 
+
     @Override
     @Transactional
     public GiftCertificate save(GiftCertificate giftCertificate) {
@@ -67,12 +66,27 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
         return giftCertificate;
     }
 
-    // the whole query in file V5__search_certificates.sql
+    /**
+     *select id, name, description, price, duration, create_date, last_update_date
+     * from gift_certificate
+     * where true
+     *   and id in (
+     *     SELECT gift_certificate_id
+     *     FROM certificate_tag
+     *              LEFT JOIN tag ON tag_id = tag.id
+     *     WHERE tag.name IN ('cheap', 'gym')
+     *     GROUP BY gift_certificate_id
+     *     HAVING COUNT(tag_id) = 2)
+     *   and name ilike '%e%'
+     *   and description ilike '%fr%'
+     * order by last_update_date
+     *     desc
+     */
     @Override
     public List<GiftCertificate> findAll(SearchCertificateDto searchDto) {
         StringBuilder sb = new StringBuilder(SQL_READ_CERTIFICATES_BASE);
         List<String> tags = searchDto.getTagNames();
-        List queryParams = new ArrayList<>();           // heap pollution, ok?
+        List queryParams = new ArrayList<>();
         if (tags != null && !tags.isEmpty()) {
             sb.append(SQL_READ_CERTIFICATES_TAGS1)
                     .append("?, ".repeat(tags.size() - 1))

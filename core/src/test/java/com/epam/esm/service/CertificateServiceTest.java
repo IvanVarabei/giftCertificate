@@ -8,10 +8,6 @@ import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.service.impl.GiftCertificateServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -23,9 +19,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
-@ContextConfiguration(classes = com.epam.esm.config.DatabaseTestConfig.class)
-@PropertySource("classpath:application-test.properties")
+//@ExtendWith(MockitoExtension.class)
 class CertificateServiceTest {
 
     TagService tagService;

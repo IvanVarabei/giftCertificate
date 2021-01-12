@@ -30,8 +30,6 @@ public class TagRepositoryImpl implements TagRepository {
     private static final String SQL_DELETE_TAG = "delete from tag where id = ?";
     private static final String SQL_BIND_TAG =
             "insert into certificate_tag (gift_certificate_id, tag_id) values (?, ?)";
-    private static final String SQL_UNBIND_TAG =
-            "delete from certificate_tag where gift_certificate_id = ? and tag_id = ?";
     private static final String SQL_UNBIND_TAGS = "delete from certificate_tag where gift_certificate_id = ?";
 
     @Override
