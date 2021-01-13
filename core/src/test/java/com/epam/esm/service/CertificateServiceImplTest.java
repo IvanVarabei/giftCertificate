@@ -20,7 +20,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 //@ExtendWith(MockitoExtension.class)
-class CertificateServiceTest {
+class CertificateServiceImplTest {
 
     TagService tagService;
     GiftCertificateRepository certificateRepository;
@@ -42,11 +42,10 @@ class CertificateServiceTest {
         certificateRepository = mock(GiftCertificateRepository.class);
         giftCertificateService = new GiftCertificateServiceImpl(certificateRepository, tagService,
                 new CertificateConverterImpl());
-
     }
 
     @Test
-    void save() {
+    void returns_certificate_having_specified_id() {
         when(certificateRepository.findById(any())).thenReturn(Optional.ofNullable(certificate));
         when(tagService.getTagsByCertificateId(any())).thenReturn(new ArrayList<>());
 

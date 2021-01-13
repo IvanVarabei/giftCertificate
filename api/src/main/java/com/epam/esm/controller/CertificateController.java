@@ -34,7 +34,7 @@ public class CertificateController {
     public List<GiftCertificateDto> getCertificates(
             @RequestParam(required = false) List<@Pattern(regexp = "\\w{2,64}") String> tagName,
             @RequestParam(required = false) @Pattern(regexp = "\\w{2,64}") String name,
-            @RequestParam(required = false) @Pattern(regexp = "\\w{2,64}") String description,
+            @RequestParam(required = false) @Pattern(regexp = ".{2,512}") String description,
             @RequestParam(required = false) SortByField sortByField,
             @RequestParam(required = false) SortOrder sortOrder
     ) {

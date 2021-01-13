@@ -1,7 +1,6 @@
 package com.epam.esm.repository.impl;
 
 import com.epam.esm.dto.SearchCertificateDto;
-import com.epam.esm.dto.search.SortOrder;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.mapper.CertificateMapper;
 import com.epam.esm.repository.GiftCertificateRepository;
@@ -46,8 +45,6 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
     private static final String SQL_DESCRIPTION_FILTER = "and description ilike '%";
 
     private static final String SQL_SORT_FIELD = "order by ";
-
-    private static final SortOrder SQL_DESC = DESC;
 
     private static final String SQL_READ_CERTIFICATE_BY_ID = "select id, name, description, price, duration, " +
             "create_date, last_update_date from gift_certificate where id = ?";
@@ -122,8 +119,8 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
             sb.append(SQL_SORT_FIELD)
                     .append(searchDto.getSortByField())
                     .append(BLANK);
-            if (SQL_DESC == searchDto.getSortOrder()) {
-                sb.append(SQL_DESC);
+            if (DESC == searchDto.getSortOrder()) {
+                sb.append(DESC);
             }
         }
         return jdbcTemplate.query(sb.toString(), certificateMapper, queryParams.toArray());

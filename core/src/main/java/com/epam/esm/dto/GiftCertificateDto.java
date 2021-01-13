@@ -12,10 +12,10 @@ import java.util.List;
 public class GiftCertificateDto {
     private Long id;
     @NotBlank
-    @Pattern(regexp = "\\w{2,64}")
+    @Pattern(regexp = "[\\w\\s]{2,64}")
     private String name;
     @NotBlank
-    @Pattern(regexp = "\\w{2,512}")
+    @Pattern(regexp = ".{2,512}")
     private String description;
     @DecimalMin(value = "0.0", inclusive = false)
     @Digits(integer = 7, fraction = 2)

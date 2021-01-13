@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.net.URI;
 import java.util.List;
 
@@ -34,17 +35,20 @@ public class TagController {
     }
 
     @GetMapping("/{tagId}")
-    public TagDto getTagById(@PathVariable("tagId") Long tagId) {
+    public TagDto getTagById(@PathVariable("tagId") @Min(1) Long tagId) {
         return tagService.getTagById(tagId);
     }
 
+    /**
+     * Not used. Not tested.
+     */
     @PutMapping
     public TagDto updateTag(@RequestBody TagDto tagDto) {
         return tagService.updateTag(tagDto);
     }
 
     @DeleteMapping("/{tagId}")
-    public ResponseEntity<TagDto> deleteTagById(@PathVariable("tagId") Long tagId) {
+    public ResponseEntity<TagDto> deleteTagById(@PathVariable("tagId") @Min(1) Long tagId) {
         tagService.deleteTag(tagId);
         return ResponseEntity.noContent().build();
     }

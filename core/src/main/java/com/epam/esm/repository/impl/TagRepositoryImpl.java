@@ -68,6 +68,9 @@ public class TagRepositoryImpl implements TagRepository {
         return jdbcTemplate.query(SQL_READ_TAG_BY_NAME, tagMapper, name).stream().findAny();
     }
 
+    /**
+     * Not used.
+     */
     @Override
     public void update(Tag tag) {
         jdbcTemplate.update(SQL_UPDATE_TAG, tag.getName(), tag.getId());
