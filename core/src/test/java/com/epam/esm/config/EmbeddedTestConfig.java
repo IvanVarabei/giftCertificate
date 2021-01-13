@@ -12,7 +12,7 @@ import javax.sql.DataSource;
 import java.io.IOException;
 
 @Configuration
-@ComponentScan("com.epam")
+@ComponentScan("com.epam.esm")
 public class EmbeddedTestConfig {
     @Bean
     public DataSource createDataSource() throws IOException {

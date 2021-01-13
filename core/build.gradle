@@ -1,4 +1,4 @@
 dependencies {
-    compile group: 'org.flywaydb', name: 'flyway-core', version: '6.4.1'
+    implementation group: 'org.flywaydb', name: 'flyway-core', version: '7.4.0'
 }
 
