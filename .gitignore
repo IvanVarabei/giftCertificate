@@ -5,6 +5,8 @@ gradle/
 gradlew
 gradlew.bat
 
+README.md
+media/
 build/
 out/
 
