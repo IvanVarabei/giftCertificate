@@ -11,8 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = com.epam.esm.config.DatabaseTestConfig.class)
-@PropertySource("classpath:application-test.properties")
+@ContextConfiguration(classes = com.epam.esm.config.EmbeddedTestConfig.class)
 class TagRepositoryImplTest {
 
     @Autowired

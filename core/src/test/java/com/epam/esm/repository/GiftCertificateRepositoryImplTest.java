@@ -13,8 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.math.BigDecimal;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = com.epam.esm.config.DatabaseTestConfig.class)
-@PropertySource("classpath:application-test.properties")
+@ContextConfiguration(classes = com.epam.esm.config.EmbeddedTestConfig.class)
 class GiftCertificateRepositoryImplTest {
 
     @Autowired
