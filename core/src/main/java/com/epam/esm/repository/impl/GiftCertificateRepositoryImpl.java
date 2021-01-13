@@ -1,6 +1,7 @@
 package com.epam.esm.repository.impl;
 
 import com.epam.esm.dto.SearchCertificateDto;
+import com.epam.esm.dto.search.SortOrder;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.mapper.CertificateMapper;
 import com.epam.esm.repository.GiftCertificateRepository;
@@ -18,6 +19,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.epam.esm.dto.search.SortOrder.DESC;
 
 @Repository
 @RequiredArgsConstructor
@@ -44,7 +47,7 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
 
     private static final String SQL_SORT_FIELD = "order by ";
 
-    private static final String SQL_DESC = "desc";
+    private static final SortOrder SQL_DESC = DESC;
 
     private static final String SQL_READ_CERTIFICATE_BY_ID = "select id, name, description, price, duration, " +
             "create_date, last_update_date from gift_certificate where id = ?";
@@ -77,20 +80,20 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
     }
 
     /**
-     *select id, name, description, price, duration, create_date, last_update_date
+     * select id, name, description, price, duration, create_date, last_update_date
      * from gift_certificate
      * where true
-     *   and id in (
-     *     SELECT gift_certificate_id
-     *     FROM certificate_tag
-     *              LEFT JOIN tag ON tag_id = tag.id
-     *     WHERE tag.name IN ('cheap', 'gym')
-     *     GROUP BY gift_certificate_id
-     *     HAVING COUNT(tag_id) = 2)
-     *   and name ilike '%e%'
-     *   and description ilike '%fr%'
+     * and id in (
+     * SELECT gift_certificate_id
+     * FROM certificate_tag
+     * LEFT JOIN tag ON tag_id = tag.id
+     * WHERE tag.name IN ('cheap', 'gym')
+     * GROUP BY gift_certificate_id
+     * HAVING COUNT(tag_id) = 2)
+     * and name ilike '%e%'
+     * and description ilike '%fr%'
      * order by last_update_date
-     *     desc
+     * desc
      */
     @Override
     public List<GiftCertificate> findAll(SearchCertificateDto searchDto) {
@@ -115,11 +118,11 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
                     .append(searchDto.getDescription())
                     .append("%' ");
         }
-        if (!StringUtils.isBlank(searchDto.getSortField())) {
+        if (searchDto.getSortByField() != null) {
             sb.append(SQL_SORT_FIELD)
-                    .append(searchDto.getSortField())
+                    .append(searchDto.getSortByField())
                     .append(BLANK);
-            if (SQL_DESC.equals(searchDto.getSortOrder())) {
+            if (SQL_DESC == searchDto.getSortOrder()) {
                 sb.append(SQL_DESC);
             }
         }

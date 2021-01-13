@@ -1,5 +1,7 @@
 package com.epam.esm.dto;
 
+import com.epam.esm.dto.search.SortByField;
+import com.epam.esm.dto.search.SortOrder;
 import lombok.Builder;
 import lombok.Data;
 
@@ -11,6 +13,6 @@ public class SearchCertificateDto {
     private List<String> tagNames;
     private String name;
     private String description;
-    private String sortField;
-    private String sortOrder;
+    private SortByField sortByField;
+    private SortOrder sortOrder;
 }

@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Optional;
 
@@ -15,6 +16,6 @@ import java.util.Optional;
 public class TagDto {
     private Long id;
     @NotBlank
-    @Size(min=2, max=30)
+    @Pattern(regexp = "\\w{2,64}")
     private String name;
 }

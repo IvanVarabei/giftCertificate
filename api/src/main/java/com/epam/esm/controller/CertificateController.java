@@ -2,8 +2,9 @@ package com.epam.esm.controller;
 
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.SearchCertificateDto;
+import com.epam.esm.dto.search.SortByField;
+import com.epam.esm.dto.search.SortOrder;
 import com.epam.esm.service.GiftCertificateService;
-import com.epam.esm.validator.NonRequired;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -28,18 +30,19 @@ public class CertificateController {
         return ResponseEntity.status(CREATED).body(giftCertificateService.createCertificate(giftCertificateDto));
     }
 
-    @GetMapping 
+    @GetMapping
     public List<GiftCertificateDto> getCertificates(
-            @RequestParam(required = false) List<@NonRequired(regex = "\\w{2,30}") String> tagName,
-            @RequestParam(required = false) @NonRequired(regex = "\\w{2,30}") String name,
-            @RequestParam(required = false) @NonRequired(regex = "\\w{2,30}") String description,
-            @RequestParam(required = false) @NonRequired(regex = "(last_update_date)|(name)") String sortField,
-            @RequestParam(required = false) @NonRequired(regex = "(asc)|(desc)") String sortOrder) {
+            @RequestParam(required = false) List<@Pattern(regexp = "\\w{2,64}") String> tagName,
+            @RequestParam(required = false) @Pattern(regexp = "\\w{2,64}") String name,
+            @RequestParam(required = false) @Pattern(regexp = "\\w{2,64}") String description,
+            @RequestParam(required = false) SortByField sortByField,
+            @RequestParam(required = false) SortOrder sortOrder
+    ) {
         SearchCertificateDto searchCertificateDto = SearchCertificateDto.builder()
                 .tagNames(tagName)
                 .name(name)
                 .description(description)
-                .sortField(sortField)
+                .sortByField(sortByField)
                 .sortOrder(sortOrder)
                 .build();
         return giftCertificateService.getCertificates(searchCertificateDto);

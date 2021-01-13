@@ -13,13 +13,16 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -29,6 +32,25 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @EnableWebMvc
 public class ErrorControllerAdvice {
+    /**
+     * Handles enum request parameters(url) conversion exception.
+     */
+    @ResponseBody
+    @ExceptionHandler
+    public ResponseEntity<ExceptionDto> handle(MethodArgumentTypeMismatchException ex) {
+        String parameterName = ex.getName();
+        String enumValues = Arrays.stream(ex.getRequiredType().getEnumConstants())
+                .map(Object::toString)
+                .collect(Collectors.joining(", "));
+        String message = String.format("Parameter '%s' must be either null or one of the following values: %s",
+                parameterName, enumValues);
+        ExceptionDto exceptionDto = new ExceptionDto();
+        exceptionDto.setErrorMessage(message);
+        exceptionDto.setErrorCode(400);
+        exceptionDto.setTimestamp(LocalDateTime.now());
+        return ResponseEntity.badRequest().body(exceptionDto);
+    }
+
     /**
      * Handles errors from @Valid
      */
