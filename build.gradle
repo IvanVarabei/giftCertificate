@@ -47,6 +47,11 @@ subprojects {
         testCompile 'org.junit.vintage:junit-vintage-engine:5.2.0'
         testCompile group: 'com.opentable.components', name: 'otj-pg-embedded', version: '0.13.3'
 
+        // https://mvnrepository.com/artifact/io.rest-assured/rest-assured
+        testCompile group: 'io.rest-assured', name: 'rest-assured', version: '4.3.3'
+
+
+
 
         // Log
         implementation 'ch.qos.logback:logback-classic:1.1.3'

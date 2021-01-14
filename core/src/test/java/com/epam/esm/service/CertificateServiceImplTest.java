@@ -45,7 +45,7 @@ class CertificateServiceImplTest {
     }
 
     @Test
-    void returns_certificate_having_specified_id() {
+    void returns_certificate_having_specified_id_when_getCertificateById() {
         when(certificateRepository.findById(any())).thenReturn(Optional.ofNullable(certificate));
         when(tagService.getTagsByCertificateId(any())).thenReturn(new ArrayList<>());
 
