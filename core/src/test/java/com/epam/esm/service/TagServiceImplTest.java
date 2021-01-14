@@ -48,14 +48,14 @@ class TagServiceImplTest {
     }
 
     @Test
-    void get_all_tags() {
+    void should_invoke_findAll_when_getTags() {
         tagService.getTags();
 
         verify(tagRepository).findAll();
     }
 
     @Test
-    void returns_tag_having_specified_id() {
+    void returns_tag_having_specified_id_when_getTagBuId() {
         when(tagRepository.findById(any())).thenReturn(Optional.ofNullable(tag));
 
         TagDto tagDto = tagService.getTagById(1L);
@@ -70,7 +70,7 @@ class TagServiceImplTest {
     }
 
     @Test
-    void returns_tag_dto_with_updated_name() {
+    void returns_tag_dto_with_updated_name_when_updateTag() {
         when(tagRepository.findById(1L)).thenReturn(Optional.of(tag));
         TagDto expectedTagDto = new TagDto(1L, "newTagName");
 
@@ -87,7 +87,7 @@ class TagServiceImplTest {
     }
 
     @Test
-    void should_invoke_tag_repository_delete() {
+    void should_invoke_tag_repository_delete_when_deleteTag() {
         when(tagRepository.findById(1L)).thenReturn(Optional.of(tag));
 
         tagService.deleteTag(1L);
@@ -101,7 +101,7 @@ class TagServiceImplTest {
     }
 
     @Test
-    void should_invoke_tagRepository_bindWithCertificate_two_times() {
+    void should_invoke_tagRepository_bindWithCertificate_two_times_when_bindTags() {
         GiftCertificate certificate = mock(GiftCertificate.class);
         Tag notExistedTag = mock(Tag.class);
         when(certificate.getTags()).thenReturn(List.of(tag, notExistedTag));
