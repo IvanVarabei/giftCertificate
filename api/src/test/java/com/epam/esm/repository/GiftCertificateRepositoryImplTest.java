@@ -12,6 +12,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -24,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = com.epam.esm.config.EmbeddedTestConfig.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@WebAppConfiguration
 class GiftCertificateRepositoryImplTest {
     @Autowired
     JdbcTemplate jdbcTemplate;

@@ -1,7 +1,6 @@
 package com.epam.esm.integration;
 
-import com.epam.esm.config.DatabaseConfig;
-import com.epam.esm.config.WebMvcConfig;
+import com.epam.esm.config.EmbeddedTestConfig;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.GiftCertificate;
@@ -31,7 +30,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {DatabaseConfig.class, WebMvcConfig.class})
+@ContextConfiguration(classes = {EmbeddedTestConfig.class})
 @WebAppConfiguration
 class CertificateControllerTest {
     @Autowired
@@ -110,7 +109,7 @@ class CertificateControllerTest {
     }
 
     @Test
-    void should_return_certificate_having_specified_id() throws Exception {
+    void should_return_certificate_having_specified_id_when_get_by_id() throws Exception {
         jdbcTemplate.update("insert into gift_certificate (id, name, description, price, duration) " +
                 "values (90324, 'getCertificateById', 'description', 1, 1)");
 

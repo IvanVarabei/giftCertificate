@@ -14,6 +14,7 @@ import javax.sql.DataSource;
 @ComponentScan("com.epam.esm")
 @PropertySource(value = "classpath:application-${spring.profiles.active}.properties", ignoreResourceNotFound = true)
 @EnableTransactionManagement
+@Profile({"prod"})
 public class DatabaseConfig {
     @Value("${jdbcUrl}")
     private String jdbcUrl;

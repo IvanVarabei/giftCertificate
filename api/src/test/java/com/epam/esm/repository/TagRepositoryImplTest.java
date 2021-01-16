@@ -1,5 +1,6 @@
 package com.epam.esm.repository;
 
+import com.epam.esm.config.EmbeddedTestConfig;
 import com.epam.esm.entity.Tag;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,6 +10,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,8 +21,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = com.epam.esm.config.EmbeddedTestConfig.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@WebAppConfiguration
+@ContextConfiguration(classes = {EmbeddedTestConfig.class})
 class TagRepositoryImplTest {
     @Autowired
     JdbcTemplate jdbcTemplate;
@@ -60,13 +63,21 @@ class TagRepositoryImplTest {
     @Test
     @Sql("/sql/insert_tag_with_id_924984.sql")
     void row_set_should_be_empty_after_delete() {
-        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet("select id from tag where id = 924984");
-        assertTrue(sqlRowSet.next());
+        //jdbcTemplate.
+        Tag tag1 = new Tag();
+        tag1.setName("testNameFindById");
 
-        tagRepository.delete(924984L);
+        Tag tagWithId = tagRepository.save(tag1);
 
-        sqlRowSet = jdbcTemplate.queryForRowSet("select id from tag where id = 924984");
-        assertFalse(sqlRowSet.next());
+//        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet("select id from tag where id = 924984");
+//        assertTrue(sqlRowSet.next());
+
+        tagRepository.delete(tagWithId.getId());
+
+//        sqlRowSet = jdbcTemplate.queryForRowSet("select id from tag where id = 924984");
+//        assertFalse(sqlRowSet.next());
+
+        assertEquals(Optional.empty(), tagRepository.findById(tagWithId.getId()));
     }
 
     @Test
