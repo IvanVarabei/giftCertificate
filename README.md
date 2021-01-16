@@ -34,7 +34,7 @@ The recommended timeline for the whole module is 2 weeks.
 10. Database: PostgreSQL/MySQL, latest version.
 11. Testing: JUnit 5.+, Mockito. 
 12. Service layer should be covered with unit tests not less than 80%. 
-13. Repository layer should be tested using integration tests with an in-memory embedded database (all operations with certificates).    
+13. Repository layer should be tested using com.epam.esm.integration tests with an in-memory embedded database (all operations with certificates).    
 
 #### General requirements
 

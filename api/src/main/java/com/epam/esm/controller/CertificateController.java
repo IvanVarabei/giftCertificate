@@ -31,7 +31,7 @@ public class CertificateController {
     }
 
     @GetMapping
-    public List<GiftCertificateDto> getCertificates(
+    public ResponseEntity<List<GiftCertificateDto>> getCertificates(
             @RequestParam(required = false) List<@Pattern(regexp = "\\w{2,64}") String> tagName,
             @RequestParam(required = false) @Pattern(regexp = "\\w{2,64}") String name,
             @RequestParam(required = false) @Pattern(regexp = ".{2,512}") String description,
@@ -45,17 +45,19 @@ public class CertificateController {
                 .sortByField(sortByField)
                 .sortOrder(sortOrder)
                 .build();
-        return giftCertificateService.getCertificates(searchCertificateDto);
+        return ResponseEntity.ok().body(giftCertificateService.getCertificates(searchCertificateDto));
     }
 
     @GetMapping("/{certificateId}")
-    public GiftCertificateDto getCertificateById(@PathVariable("certificateId") @Min(1) Long certificateId) {
-        return giftCertificateService.getCertificateById(certificateId);
+    public ResponseEntity<GiftCertificateDto> getCertificateById(
+            @PathVariable("certificateId") @Min(1) Long certificateId) {
+        return ResponseEntity.ok().body(giftCertificateService.getCertificateById(certificateId));
     }
 
     @PutMapping
-    public GiftCertificateDto updateCertificate(@Valid @RequestBody GiftCertificateDto giftCertificateDto) {
-        return giftCertificateService.updateCertificate(giftCertificateDto);
+    public ResponseEntity<GiftCertificateDto> updateCertificate(
+            @Valid @RequestBody GiftCertificateDto giftCertificateDto) {
+        return ResponseEntity.ok().body(giftCertificateService.updateCertificate(giftCertificateDto));
     }
 
     @DeleteMapping("/{certificateId}")

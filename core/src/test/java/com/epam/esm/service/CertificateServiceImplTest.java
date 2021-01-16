@@ -1,6 +1,5 @@
 package com.epam.esm.service;
 
-
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.exception.ResourceNotFoundException;
@@ -19,9 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-//@ExtendWith(MockitoExtension.class)
 class CertificateServiceImplTest {
-
     TagService tagService;
     GiftCertificateRepository certificateRepository;
     GiftCertificateService giftCertificateService;

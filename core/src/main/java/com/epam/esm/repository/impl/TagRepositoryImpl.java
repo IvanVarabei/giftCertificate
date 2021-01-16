@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -83,9 +82,6 @@ public class TagRepositoryImpl implements TagRepository {
 
     @Override
     public List<Tag> getTagsByCertificateId(Long certificateId) {
-        if (certificateId == null) {
-            return Collections.emptyList();
-        }
         return jdbcTemplate.query(SQL_READ_TAGS_BY_CERTIFICATE_ID, tagMapper, certificateId);
     }
 

@@ -40,10 +40,10 @@ public class TagController {
     }
 
     /**
-     * Not used. Not tested.
+     * Not used.
      */
     @PutMapping
-    public TagDto updateTag(@RequestBody TagDto tagDto) {
+    public TagDto updateTag(@Valid @RequestBody TagDto tagDto) {
         return tagService.updateTag(tagDto);
     }
 

@@ -20,7 +20,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class TagServiceImplTest {
-
     TagService tagService;
     TagRepository tagRepository;
     Tag tag;
@@ -38,13 +37,10 @@ class TagServiceImplTest {
     }
 
     @Test
-    void save() {
-        when(tagRepository.save(any())).thenReturn(tag);
-        TagDto expectedTagDto = new TagDto(1L, "tagTestName");
+    void should_invoke_tagRepository_save_when_createTag() {
+        tagService.createTag(new TagDto(null, "tagTestName"));
 
-        TagDto actualTagDto = tagService.createTag(new TagDto(null, "tagTestName"));
-
-        assertEquals(expectedTagDto, actualTagDto);
+        verify(tagRepository).save(any());
     }
 
     @Test
