@@ -5,14 +5,14 @@ import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.exception.ExceptionDto;
+import com.epam.esm.repository.GiftCertificateRepository;
+import com.epam.esm.repository.TagRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -34,11 +34,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 class CertificateControllerTest {
     @Autowired
-    private WebApplicationContext wac;
+    WebApplicationContext wac;
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-    private ObjectMapper objectMapper;
-    private MockMvc mockMvc;
+    GiftCertificateRepository certificateRepository;
+    @Autowired
+    TagRepository tagRepository;
+    ObjectMapper objectMapper;
+    MockMvc mockMvc;
 
     @BeforeEach
     public void setup() {
@@ -68,9 +70,6 @@ class CertificateControllerTest {
 
         assertNotNull(createdCertificate.getId());
         assertNotNull(createdCertificate.getTags().get(0).getId());
-
-        jdbcTemplate.update("delete from tag where name = 'testCreateCertificateTagName'");
-        jdbcTemplate.update("delete from gift_certificate where name = 'creteCertificate'");
     }
 
     @Test
@@ -91,8 +90,12 @@ class CertificateControllerTest {
 
     @Test
     void should_return_not_empty_list_of_certificates_after_get_method() throws Exception {
-        jdbcTemplate.update("insert into gift_certificate (id, name, description, price, duration) " +
-                "values (94563, 'getCertificates', 'description', 1, 1)");
+        GiftCertificate certificate = new GiftCertificate();
+        certificate.setName("testGetAll");
+        certificate.setDescription("test description");
+        certificate.setPrice(BigDecimal.TEN);
+        certificate.setDuration(1);
+        certificateRepository.save(certificate);
 
         String responseAsString = mockMvc
                 .perform(get("/api/certificates"))
@@ -104,34 +107,39 @@ class CertificateControllerTest {
         });
 
         assertFalse(foundCertificates.isEmpty());
-
-        jdbcTemplate.update("delete from gift_certificate where id = 94563");
     }
 
     @Test
     void should_return_certificate_having_specified_id_when_get_by_id() throws Exception {
-        jdbcTemplate.update("insert into gift_certificate (id, name, description, price, duration) " +
-                "values (90324, 'getCertificateById', 'description', 1, 1)");
+        GiftCertificate certificate = new GiftCertificate();
+        certificate.setName("testGetById");
+        certificate.setDescription("test description");
+        certificate.setPrice(BigDecimal.TEN);
+        certificate.setDuration(1);
+        Long id = certificateRepository.save(certificate).getId();
 
         String responseAsString = mockMvc
-                .perform(get("/api/certificates/90324"))
+                .perform(get("/api/certificates/" + id))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
         GiftCertificateDto foundCertificate = objectMapper.readValue(responseAsString, GiftCertificateDto.class);
 
-        assertEquals(90324, foundCertificate.getId());
-
-        jdbcTemplate.update("delete from gift_certificate where id = 90324");
+        assertEquals(id, foundCertificate.getId());
     }
 
     @Test
     void should_return_certificate_having_updated_fields_after_update() throws Exception {
-        jdbcTemplate.update("insert into gift_certificate (id, name, description, price, duration) " +
-                "values (98490, 'updateCertificate', 'description', 1, 1)");
+        GiftCertificate certificate = new GiftCertificate();
+        certificate.setName("testUpdate");
+        certificate.setDescription("test description");
+        certificate.setPrice(BigDecimal.TEN);
+        certificate.setDuration(1);
+        Long id = certificateRepository.save(certificate).getId();
+
         GiftCertificateDto certificateDto = new GiftCertificateDto();
-        certificateDto.setId(98490L);
+        certificateDto.setId(id);
         certificateDto.setName("updated name");
         certificateDto.setDescription("updated description");
         certificateDto.setPrice(BigDecimal.ONE);
@@ -151,20 +159,20 @@ class CertificateControllerTest {
 
         assertEquals("updated name", updatedCertificate.getName());
         assertEquals("newCreatedTag", updatedCertificate.getTags().get(0).getName());
-
-        jdbcTemplate.update("delete from tag where name = 'newCreatedTag'");
-        jdbcTemplate.update("delete from gift_certificate where id = 98490");
     }
 
     @Test
-    void row_set_should_be_empty_after_delete() throws Exception {
-        jdbcTemplate.update("insert into gift_certificate (id, name, description, price, duration) " +
-                "values (94915, 'deleteCertificate', 'description', 1, 1)");
+    void repository_should_return_empty_optional_after_delete() throws Exception {
+        GiftCertificate certificate = new GiftCertificate();
+        certificate.setName("testDelete");
+        certificate.setDescription("test description");
+        certificate.setPrice(BigDecimal.TEN);
+        certificate.setDuration(1);
+        Long id = certificateRepository.save(certificate).getId();
 
-        mockMvc.perform(delete("/api/certificates/94915"))
+        mockMvc.perform(delete("/api/certificates/" + id))
                 .andExpect(status().is(204));
 
-        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet("select id from gift_certificate where id = 94915");
-        assertFalse(sqlRowSet.next());
+        assertFalse(certificateRepository.findById(id).isPresent());
     }
 }

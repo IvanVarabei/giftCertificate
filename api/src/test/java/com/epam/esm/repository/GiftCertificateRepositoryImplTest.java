@@ -4,13 +4,11 @@ import com.epam.esm.dto.SearchCertificateDto;
 import com.epam.esm.dto.search.SortByField;
 import com.epam.esm.dto.search.SortOrder;
 import com.epam.esm.entity.GiftCertificate;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
@@ -19,16 +17,11 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = com.epam.esm.config.EmbeddedTestConfig.class)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @WebAppConfiguration
 class GiftCertificateRepositoryImplTest {
-    @Autowired
-    JdbcTemplate jdbcTemplate;
     @Autowired
     GiftCertificateRepository certificateRepository;
 
@@ -72,11 +65,16 @@ class GiftCertificateRepositoryImplTest {
     }
 
     @Test
-    @Sql("/sql/insert_certificate_with_id_93443.sql")
-    @Order(1)
-    void row_set_should_not_be_empty_after_update() {
+    void should_be_updated_name_after_update() {
+        GiftCertificate initialCertificate = new GiftCertificate();
+        initialCertificate.setName("initialName");
+        initialCertificate.setDescription("initialDescription");
+        initialCertificate.setPrice(BigDecimal.ONE);
+        initialCertificate.setDuration(2);
+        Long id = certificateRepository.save(initialCertificate).getId();
+
         GiftCertificate update = new GiftCertificate();
-        update.setId(93443L);
+        update.setId(id);
         update.setName("updatedName");
         update.setDescription("updatedDescription");
         update.setPrice(BigDecimal.TEN);
@@ -84,20 +82,20 @@ class GiftCertificateRepositoryImplTest {
 
         certificateRepository.update(update);
 
-        String sql = "select id from gift_certificate where id = 93443 and name = 'updatedName' and price = 10";
-        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(sql);
-        assertTrue(sqlRowSet.next());
+        assertEquals(update.getName(), certificateRepository.findById(id).get().getName());
     }
 
     @Test
-    @Order(2)
-    void row_set_should_be_empty_after_delete() {
-        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet("select id from gift_certificate where id = 93443");
-        assertTrue(sqlRowSet.next());
+    void should_be_empty_optional_after_delete_when_find_by_id() {
+        GiftCertificate initialCertificate = new GiftCertificate();
+        initialCertificate.setName("testDelete");
+        initialCertificate.setDescription("testDelete");
+        initialCertificate.setPrice(BigDecimal.ONE);
+        initialCertificate.setDuration(2);
+        Long id = certificateRepository.save(initialCertificate).getId();
 
-        certificateRepository.delete(93443L);
+        certificateRepository.delete(id);
 
-        sqlRowSet = jdbcTemplate.queryForRowSet("select id from gift_certificate where id = 93443");
-        assertFalse(sqlRowSet.next());
+        assertEquals(Optional.empty(), certificateRepository.findById(id));
     }
 }

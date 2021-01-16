@@ -61,21 +61,12 @@ class TagRepositoryImplTest {
     }
 
     @Test
-    @Sql("/sql/insert_tag_with_id_924984.sql")
     void row_set_should_be_empty_after_delete() {
-        //jdbcTemplate.
-        Tag tag1 = new Tag();
-        tag1.setName("testNameFindById");
-
-        Tag tagWithId = tagRepository.save(tag1);
-
-//        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet("select id from tag where id = 924984");
-//        assertTrue(sqlRowSet.next());
+        Tag testTag = new Tag();
+        testTag.setName("testNameDelete");
+        Tag tagWithId = tagRepository.save(testTag);
 
         tagRepository.delete(tagWithId.getId());
-
-//        sqlRowSet = jdbcTemplate.queryForRowSet("select id from tag where id = 924984");
-//        assertFalse(sqlRowSet.next());
 
         assertEquals(Optional.empty(), tagRepository.findById(tagWithId.getId()));
     }

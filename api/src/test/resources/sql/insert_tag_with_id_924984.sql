@@ -1,1 +1,0 @@
-insert into tag (id, name) VALUES (924984, 'testDelete')
