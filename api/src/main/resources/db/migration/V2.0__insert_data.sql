@@ -8,7 +8,7 @@ VALUES ('gym'),
        ('cheap'),
        ('rest');
 
-INSERT INTO public.certificate_tag(gift_certificate_id, tag_id)
+INSERT INTO certificate_tag(gift_certificate_id, tag_id)
 VALUES (1, 1),
        (1, 2),
        (3, 3),
