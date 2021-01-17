@@ -1,8 +1,5 @@
 package com.epam.esm.config;
 
-
-import com.epam.esm.dto.SearchCertificateDto;
-
 import com.epam.esm.dto.search.SortByField;
 import com.epam.esm.dto.search.SortOrder;
 import org.springframework.context.annotation.Bean;

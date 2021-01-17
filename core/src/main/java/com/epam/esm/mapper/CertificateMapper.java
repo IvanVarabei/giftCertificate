@@ -1,7 +1,6 @@
 package com.epam.esm.mapper;
 
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Component;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 
 @Component
 @RequiredArgsConstructor
