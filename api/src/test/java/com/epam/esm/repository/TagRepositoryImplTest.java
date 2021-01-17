@@ -1,27 +1,26 @@
 package com.epam.esm.repository;
 
 import com.epam.esm.config.EmbeddedTestConfig;
+import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = {EmbeddedTestConfig.class})
 class TagRepositoryImplTest {
@@ -29,6 +28,8 @@ class TagRepositoryImplTest {
     JdbcTemplate jdbcTemplate;
     @Autowired
     TagRepository tagRepository;
+    @Autowired
+    GiftCertificateRepository certificateRepository;
 
     @Test
     void should_id_not_be_null_when_save() {
@@ -82,29 +83,37 @@ class TagRepositoryImplTest {
     }
 
     @Test
-    @Sql("/sql/insert_certificate_id_97777_tag_id_98888.sql")
-    @Order(1)
     void row_set_should_not_be_empty_after_bind() {
-        String sql = "select tag_id from certificate_tag where gift_certificate_id = 97777 and tag_id = 98888";
-        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(sql);
-        assertFalse(sqlRowSet.next());
+        Tag tag = new Tag();
+        tag.setName("testBind");
+        Long tagId = tagRepository.save(tag).getId();
+        GiftCertificate certificate = new GiftCertificate();
+        certificate.setName("testBind");
+        certificate.setDescription("testBind");
+        certificate.setPrice(BigDecimal.ONE);
+        certificate.setDuration(1);
+        Long certificateId = certificateRepository.save(certificate).getId();
 
-        tagRepository.bindWithCertificate(97777L, 98888L);
+        tagRepository.bindWithCertificate(certificateId, tagId);
 
-        sqlRowSet = jdbcTemplate.queryForRowSet(sql);
-        assertTrue(sqlRowSet.next());
+        assertEquals(tagId, tagRepository.getTagsByCertificateId(certificateId).get(0).getId());
     }
 
     @Test
-    @Order(2)
     void row_set_should_be_empty_after_unbind() {
-        String sql = "select tag_id from certificate_tag where gift_certificate_id = 97777 and tag_id = 98888";
-        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(sql);
-        assertTrue(sqlRowSet.next());
+        Tag tag = new Tag();
+        tag.setName("testUnbind");
+        Long tagId = tagRepository.save(tag).getId();
+        GiftCertificate certificate = new GiftCertificate();
+        certificate.setName("testUnbind");
+        certificate.setDescription("testUnbind");
+        certificate.setPrice(BigDecimal.ONE);
+        certificate.setDuration(1);
+        Long certificateId = certificateRepository.save(certificate).getId();
+        tagRepository.bindWithCertificate(certificateId, tagId);
 
-        tagRepository.unbindTagsFromCertificate(97777L);
+        tagRepository.unbindTagsFromCertificate(certificateId);
 
-        sqlRowSet = jdbcTemplate.queryForRowSet(sql);
-        assertFalse(sqlRowSet.next());
+        assertTrue(tagRepository.getTagsByCertificateId(certificateId).isEmpty());
     }
 }
