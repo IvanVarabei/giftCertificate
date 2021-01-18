@@ -33,8 +33,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public GiftCertificateDto createCertificate(GiftCertificateDto giftCertificateDto) {
         GiftCertificate createdCertificate = certificateConverter.toEntity(giftCertificateDto);
         createdCertificate.setId(null);
-        createdCertificate.setCreatedDate(LocalDateTime.now(GiftCertificateRepository.defaultZone));
-        createdCertificate.setUpdatedDate(LocalDateTime.now(GiftCertificateRepository.defaultZone));
+        createdCertificate.setCreatedDate(LocalDateTime.now(giftCertificateRepository.getDatabaseZoneId()));
+        createdCertificate.setUpdatedDate(createdCertificate.getCreatedDate());
         giftCertificateRepository.save(createdCertificate);
         List<Tag> tags = tagService.bindTags(createdCertificate);
         createdCertificate.setTags(tags);
@@ -70,7 +70,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         existed.setPrice(update.getPrice());
         existed.setDescription(update.getDescription());
         existed.setDuration(update.getDuration());
-        existed.setUpdatedDate(LocalDateTime.now(GiftCertificateRepository.defaultZone));
+        existed.setUpdatedDate(LocalDateTime.now(giftCertificateRepository.getDatabaseZoneId()));
         giftCertificateRepository.update(existed);
         tagService.unbindTagsFromCertificate(existed.getId());
         existed.setTags(tagService.bindTags(update));
@@ -88,7 +88,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     private void adjustDateTimeAccordingToClientTimeZone(GiftCertificate certificate, ZoneId toZone) {
-        ZoneId repositoryZone = GiftCertificateRepository.defaultZone;
+        ZoneId repositoryZone = giftCertificateRepository.getDatabaseZoneId();
         certificate.setCreatedDate(DateTimeUtil.toZone(certificate.getCreatedDate(), repositoryZone, toZone));
         certificate.setUpdatedDate(DateTimeUtil.toZone(certificate.getUpdatedDate(), repositoryZone, toZone));
     }

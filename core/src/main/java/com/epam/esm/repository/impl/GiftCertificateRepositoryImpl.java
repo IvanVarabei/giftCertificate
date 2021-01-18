@@ -17,16 +17,18 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.TimeZone;
 
 import static com.epam.esm.dto.search.SortOrder.DESC;
 
 @Repository
 @RequiredArgsConstructor
 public class GiftCertificateRepositoryImpl implements GiftCertificateRepository {
+    private static final ZoneId defaultZone = ZoneOffset.UTC;
     private final JdbcTemplate jdbcTemplate;
     private final CertificateMapper certificateMapper;
 
@@ -65,7 +67,7 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
     public GiftCertificate save(GiftCertificate giftCertificate) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         LocalDateTime createdDate = DateTimeUtil
-                .toZone(giftCertificate.getCreatedDate(), defaultZone, TimeZone.getDefault().toZoneId());
+                .toZone(giftCertificate.getCreatedDate(), defaultZone, ZoneId.systemDefault());
         jdbcTemplate.update(connection -> {
             PreparedStatement preparedStatement = connection.prepareStatement(SQL_CREATE_CERTIFICATE, Statement.RETURN_GENERATED_KEYS);
             int index = 1;
@@ -139,7 +141,7 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
     @Override
     public void update(GiftCertificate giftCertificate) {
         LocalDateTime updatedDate = DateTimeUtil
-                .toZone(giftCertificate.getUpdatedDate(), defaultZone, TimeZone.getDefault().toZoneId());
+                .toZone(giftCertificate.getUpdatedDate(), defaultZone, ZoneId.systemDefault());
         jdbcTemplate.update(SQL_UPDATE_CERTIFICATE, giftCertificate.getName(), giftCertificate.getDescription(),
                 giftCertificate.getPrice(), giftCertificate.getDuration(), updatedDate, giftCertificate.getId());
     }
@@ -147,5 +149,10 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
     @Override
     public void delete(Long giftCertificateId) {
         jdbcTemplate.update(SQL_DELETE_CERTIFICATE, giftCertificateId);
+    }
+
+    @Override
+    public ZoneId getDatabaseZoneId() {
+        return defaultZone;
     }
 }

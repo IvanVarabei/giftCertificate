@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -40,6 +41,7 @@ class CertificateServiceImplTest {
     public void setUp() {
         tagService = mock(TagService.class);
         certificateRepository = mock(GiftCertificateRepository.class);
+        when(certificateRepository.getDatabaseZoneId()).thenReturn(ZoneOffset.UTC);
         giftCertificateService = new GiftCertificateServiceImpl(certificateRepository, tagService,
                 new CertificateConverterImpl());
     }
