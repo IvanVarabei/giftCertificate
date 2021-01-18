@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -44,6 +45,8 @@ class CertificateServiceImplTest {
     @Test
     void should_invoke_tagService_bindTags_when_createCertificate() {
         GiftCertificateDto certificateDto = new GiftCertificateDto();
+        certificateDto.setCreatedDate(LocalDateTime.now());
+        certificateDto.setUpdatedDate(LocalDateTime.now());
 
         giftCertificateService.createCertificate(certificateDto);
 
@@ -52,7 +55,13 @@ class CertificateServiceImplTest {
 
     @Test
     void should_invoke_tagService_getTagsByCertificateId_two_times_when_findAll() {
-        when(certificateRepository.findAll(any())).thenReturn(List.of(new GiftCertificate(), new GiftCertificate()));
+        GiftCertificate certificate1 = new GiftCertificate();
+        certificate1.setCreatedDate(LocalDateTime.now());
+        certificate1.setUpdatedDate(LocalDateTime.now());
+        GiftCertificate certificate2 = new GiftCertificate();
+        certificate2.setCreatedDate(LocalDateTime.now());
+        certificate2.setUpdatedDate(LocalDateTime.now());
+        when(certificateRepository.findAll(any())).thenReturn(List.of(certificate1, certificate2));
 
         giftCertificateService.getCertificates(null);
 

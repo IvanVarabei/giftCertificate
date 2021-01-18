@@ -4,6 +4,7 @@ import com.epam.esm.dto.SearchCertificateDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.mapper.CertificateMapper;
 import com.epam.esm.repository.GiftCertificateRepository;
+import com.epam.esm.util.DateTimeUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.TimeZone;
 
 import static com.epam.esm.dto.search.SortOrder.DESC;
 
@@ -62,7 +64,8 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
     @Transactional
     public GiftCertificate save(GiftCertificate giftCertificate) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        LocalDateTime createdDate = LocalDateTime.now();
+        LocalDateTime createdDate = DateTimeUtil
+                .toZone(giftCertificate.getCreatedDate(), defaultZone, TimeZone.getDefault().toZoneId());
         jdbcTemplate.update(connection -> {
             PreparedStatement preparedStatement = connection.prepareStatement(SQL_CREATE_CERTIFICATE, Statement.RETURN_GENERATED_KEYS);
             int index = 1;
@@ -75,8 +78,6 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
             return preparedStatement;
         }, keyHolder);
         giftCertificate.setId(((Number) keyHolder.getKeys().get("id")).longValue());
-        giftCertificate.setCreatedDate(LocalDateTime.now(defaultZone));
-        giftCertificate.setUpdatedDate(LocalDateTime.now(defaultZone));
         return giftCertificate;
     }
 
@@ -137,9 +138,10 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
 
     @Override
     public void update(GiftCertificate giftCertificate) {
+        LocalDateTime updatedDate = DateTimeUtil
+                .toZone(giftCertificate.getUpdatedDate(), defaultZone, TimeZone.getDefault().toZoneId());
         jdbcTemplate.update(SQL_UPDATE_CERTIFICATE, giftCertificate.getName(), giftCertificate.getDescription(),
-                giftCertificate.getPrice(), giftCertificate.getDuration(), LocalDateTime.now(),
-                giftCertificate.getId());
+                giftCertificate.getPrice(), giftCertificate.getDuration(), updatedDate, giftCertificate.getId());
     }
 
     @Override

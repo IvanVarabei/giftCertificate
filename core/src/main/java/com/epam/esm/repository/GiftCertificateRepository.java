@@ -4,11 +4,12 @@ import com.epam.esm.dto.SearchCertificateDto;
 import com.epam.esm.entity.GiftCertificate;
 
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
 public interface GiftCertificateRepository {
-    ZoneId defaultZone = ZoneId.of("UTC");
+    ZoneId defaultZone = ZoneOffset.UTC;
 
     GiftCertificate save(GiftCertificate giftCertificate);
 
