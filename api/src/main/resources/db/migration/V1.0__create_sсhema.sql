@@ -5,8 +5,8 @@ create table gift_certificate
     description      varchar(512),
     price            numeric(16, 2) not null,
     duration         integer        not null,
-    create_date      timestamptz    not null default (now() at time zone 'Europe/Moscow'),
-    last_update_date timestamptz    not null default (now() at time zone 'Europe/Moscow'),
+    create_date      timestamptz    not null default (now() at time zone 'utc'),
+    last_update_date timestamptz    not null default (now() at time zone 'utc'),
     constraint unique_certificate_name unique (name),
     constraint positive_price check (price > (0)::numeric)
 );

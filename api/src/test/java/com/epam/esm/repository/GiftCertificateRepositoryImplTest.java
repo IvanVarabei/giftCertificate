@@ -13,6 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,6 +80,7 @@ class GiftCertificateRepositoryImplTest {
         update.setDescription("updatedDescription");
         update.setPrice(BigDecimal.TEN);
         update.setDuration(1);
+        update.setUpdatedDate(LocalDateTime.now());
 
         certificateRepository.update(update);
 

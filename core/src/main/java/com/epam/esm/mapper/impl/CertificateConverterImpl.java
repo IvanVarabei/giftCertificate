@@ -7,14 +7,11 @@ import com.epam.esm.entity.Tag;
 import com.epam.esm.mapper.CertificateConverter;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class CertificateConverterImpl implements CertificateConverter {
-
     @Override
     public GiftCertificateDto toDTO(GiftCertificate certificate) {
         if (certificate == null) {
@@ -29,10 +26,10 @@ public class CertificateConverterImpl implements CertificateConverter {
         giftCertificateDto.setPrice(certificate.getPrice());
         giftCertificateDto.setDuration(certificate.getDuration());
         if (certificate.getCreatedDate() != null) {
-            giftCertificateDto.setCreatedDate(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(certificate.getCreatedDate()));
+            giftCertificateDto.setCreatedDate(certificate.getCreatedDate());
         }
         if (certificate.getUpdatedDate() != null) {
-            giftCertificateDto.setUpdatedDate(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(certificate.getUpdatedDate()));
+            giftCertificateDto.setUpdatedDate(certificate.getUpdatedDate());
         }
         giftCertificateDto.setTags(toDTOs(certificate.getTags()));
 
@@ -53,10 +50,10 @@ public class CertificateConverterImpl implements CertificateConverter {
         giftCertificate.setPrice(giftCertificateDto.getPrice());
         giftCertificate.setDuration(giftCertificateDto.getDuration());
         if (giftCertificateDto.getCreatedDate() != null) {
-            giftCertificate.setCreatedDate(LocalDateTime.parse(giftCertificateDto.getCreatedDate()));
+            giftCertificate.setCreatedDate(giftCertificateDto.getCreatedDate());
         }
         if (giftCertificateDto.getUpdatedDate() != null) {
-            giftCertificate.setUpdatedDate(LocalDateTime.parse(giftCertificateDto.getUpdatedDate()));
+            giftCertificate.setUpdatedDate(giftCertificateDto.getUpdatedDate());
         }
         giftCertificate.setTags(toEntities(giftCertificateDto.getTags()));
 

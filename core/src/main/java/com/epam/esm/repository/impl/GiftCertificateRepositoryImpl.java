@@ -49,8 +49,8 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
     private static final String SQL_READ_CERTIFICATE_BY_ID = "select id, name, description, price, duration, " +
             "create_date, last_update_date from gift_certificate where id = ?";
 
-    private static final String SQL_UPDATE_CERTIFICATE =
-            "update gift_certificate set name = ?, description = ?, price = ?, duration = ? where id = ?";
+    private static final String SQL_UPDATE_CERTIFICATE = "update gift_certificate set name = ?, description = ?, " +
+            "price = ?, duration = ?, last_update_date = ? where id = ?";
 
     private static final String SQL_DELETE_CERTIFICATE = "delete from gift_certificate where id = ?";
 
@@ -134,7 +134,8 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
     @Override
     public void update(GiftCertificate giftCertificate) {
         jdbcTemplate.update(SQL_UPDATE_CERTIFICATE, giftCertificate.getName(), giftCertificate.getDescription(),
-                giftCertificate.getPrice(), giftCertificate.getDuration(), giftCertificate.getId());
+                giftCertificate.getPrice(), giftCertificate.getDuration(), giftCertificate.getUpdatedDate(),
+                giftCertificate.getId());
     }
 
     @Override
