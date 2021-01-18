@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.Assert.assertFalse;
@@ -95,6 +96,7 @@ class CertificateControllerTest {
         certificate.setDescription("test description");
         certificate.setPrice(BigDecimal.TEN);
         certificate.setDuration(1);
+        certificate.setCreatedDate(LocalDateTime.now());
         certificateRepository.save(certificate);
 
         String responseAsString = mockMvc
@@ -116,6 +118,7 @@ class CertificateControllerTest {
         certificate.setDescription("test description");
         certificate.setPrice(BigDecimal.TEN);
         certificate.setDuration(1);
+        certificate.setCreatedDate(LocalDateTime.now());
         Long id = certificateRepository.save(certificate).getId();
 
         String responseAsString = mockMvc
@@ -136,6 +139,7 @@ class CertificateControllerTest {
         certificate.setDescription("test description");
         certificate.setPrice(BigDecimal.TEN);
         certificate.setDuration(1);
+        certificate.setCreatedDate(LocalDateTime.now());
         Long id = certificateRepository.save(certificate).getId();
 
         GiftCertificateDto certificateDto = new GiftCertificateDto();
@@ -168,6 +172,7 @@ class CertificateControllerTest {
         certificate.setDescription("test description");
         certificate.setPrice(BigDecimal.TEN);
         certificate.setDuration(1);
+        certificate.setCreatedDate(LocalDateTime.now());
         Long id = certificateRepository.save(certificate).getId();
 
         mockMvc.perform(delete("/api/certificates/" + id))

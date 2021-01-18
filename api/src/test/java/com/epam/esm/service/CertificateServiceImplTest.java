@@ -32,6 +32,8 @@ class CertificateServiceImplTest {
         certificate.setDescription("description test 1");
         certificate.setPrice(new BigDecimal(100));
         certificate.setDuration(5);
+        certificate.setCreatedDate(LocalDateTime.now());
+        certificate.setUpdatedDate(LocalDateTime.now());
     }
 
     @BeforeEach

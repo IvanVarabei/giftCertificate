@@ -12,6 +12,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -89,6 +90,7 @@ class TagRepositoryImplTest {
         certificate.setDescription("testBind");
         certificate.setPrice(BigDecimal.ONE);
         certificate.setDuration(1);
+        certificate.setCreatedDate(LocalDateTime.now());
         Long certificateId = certificateRepository.save(certificate).getId();
 
         tagRepository.bindWithCertificate(certificateId, tagId);
@@ -106,6 +108,7 @@ class TagRepositoryImplTest {
         certificate.setDescription("testUnbind");
         certificate.setPrice(BigDecimal.ONE);
         certificate.setDuration(1);
+        certificate.setCreatedDate(LocalDateTime.now());
         Long certificateId = certificateRepository.save(certificate).getId();
         tagRepository.bindWithCertificate(certificateId, tagId);
 
