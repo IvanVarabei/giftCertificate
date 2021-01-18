@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +29,8 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
     private final CertificateMapper certificateMapper;
 
     private static final String SQL_CREATE_CERTIFICATE =
-            "insert into gift_certificate (name, description, price, duration) values (?, ?, ?, ?);";
+            "insert into gift_certificate (name, description, price, duration, create_date, last_update_date) " +
+                    "values (?, ?, ?, ?, ?, ?);";
 
     private static final String SQL_READ_CERTIFICATES_BASE =
             "select id, name, description, price, duration, create_date, last_update_date from gift_certificate " +
@@ -56,23 +58,25 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
 
     private static final String BLANK = " ";
 
-
     @Override
     @Transactional
     public GiftCertificate save(GiftCertificate giftCertificate) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
+        LocalDateTime createdDate = LocalDateTime.now();
         jdbcTemplate.update(connection -> {
             PreparedStatement preparedStatement = connection.prepareStatement(SQL_CREATE_CERTIFICATE, Statement.RETURN_GENERATED_KEYS);
             int index = 1;
             preparedStatement.setString(index++, giftCertificate.getName());
             preparedStatement.setString(index++, giftCertificate.getDescription());
             preparedStatement.setBigDecimal(index++, giftCertificate.getPrice());
-            preparedStatement.setInt(index, giftCertificate.getDuration());
+            preparedStatement.setInt(index++, giftCertificate.getDuration());
+            preparedStatement.setTimestamp(index++, Timestamp.valueOf(createdDate));
+            preparedStatement.setTimestamp(index, Timestamp.valueOf(createdDate));
             return preparedStatement;
         }, keyHolder);
         giftCertificate.setId(((Number) keyHolder.getKeys().get("id")).longValue());
-        giftCertificate.setCreatedDate(((Timestamp) (keyHolder.getKeys().get("create_date"))).toLocalDateTime());
-        giftCertificate.setUpdatedDate(((Timestamp) (keyHolder.getKeys().get("last_update_date"))).toLocalDateTime());
+        giftCertificate.setCreatedDate(LocalDateTime.now(defaultZone));
+        giftCertificate.setUpdatedDate(LocalDateTime.now(defaultZone));
         return giftCertificate;
     }
 
@@ -134,7 +138,7 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
     @Override
     public void update(GiftCertificate giftCertificate) {
         jdbcTemplate.update(SQL_UPDATE_CERTIFICATE, giftCertificate.getName(), giftCertificate.getDescription(),
-                giftCertificate.getPrice(), giftCertificate.getDuration(), giftCertificate.getUpdatedDate(),
+                giftCertificate.getPrice(), giftCertificate.getDuration(), LocalDateTime.now(),
                 giftCertificate.getId());
     }
 

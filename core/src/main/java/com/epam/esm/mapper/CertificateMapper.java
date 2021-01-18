@@ -7,6 +7,10 @@ import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 
 @Component
@@ -20,8 +24,18 @@ public class CertificateMapper implements RowMapper<GiftCertificate> {
         giftCertificate.setDescription(rs.getString("description"));
         giftCertificate.setPrice(rs.getBigDecimal("price"));
         giftCertificate.setDuration(rs.getInt("duration"));
-        giftCertificate.setCreatedDate(rs.getTimestamp("create_date").toLocalDateTime());
-        giftCertificate.setUpdatedDate(rs.getTimestamp("last_update_date").toLocalDateTime());
+        Instant instant = rs.getTimestamp("create_date").toInstant();
+        ZonedDateTime zd = ZonedDateTime.ofInstant(instant, ZoneId.of("UTC"));
+        LocalDateTime ld = zd.toLocalDateTime();
+        giftCertificate.setCreatedDate(ZonedDateTime
+                .ofInstant(rs.getTimestamp("create_date").toInstant(), ZoneId.of("UTC"))
+                .toLocalDateTime());
+        giftCertificate.setUpdatedDate(ZonedDateTime
+                .ofInstant(rs.getTimestamp("last_update_date").toInstant(), ZoneId.of("UTC"))
+                .toLocalDateTime());
+
+        //        giftCertificate.setCreatedDate(rs.getTimestamp("create_date").toLocalDateTime());
+//        giftCertificate.setUpdatedDate(rs.getTimestamp("last_update_date").toLocalDateTime());
         giftCertificate.setTags(new ArrayList<>());
         return giftCertificate;
     }

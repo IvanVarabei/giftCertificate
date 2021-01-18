@@ -10,17 +10,20 @@ import com.epam.esm.mapper.CertificateConverter;
 import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
+import com.epam.esm.util.DateTimeUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class GiftCertificateServiceImpl implements GiftCertificateService {
+    private static final ZoneId clientZone = ZoneId.of("Europe/Moscow");
     private final GiftCertificateRepository giftCertificateRepository;
     private final TagService tagService;
     private final CertificateConverter certificateConverter;
@@ -33,6 +36,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         giftCertificateRepository.save(createdCertificate);
         List<Tag> tags = tagService.bindTags(createdCertificate);
         createdCertificate.setTags(tags);
+        adjustDateTimeAccordingToClientTimeZone(createdCertificate, clientZone);
         return certificateConverter.toDTO(createdCertificate);
     }
 
@@ -40,6 +44,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public List<GiftCertificateDto> getCertificates(SearchCertificateDto searchDto) {
         List<GiftCertificate> certificates = giftCertificateRepository.findAll(searchDto);
         certificates.forEach(c -> c.setTags(tagService.getTagsByCertificateId(c.getId())));
+        certificates.forEach(c -> adjustDateTimeAccordingToClientTimeZone(c, clientZone));
         return certificates.stream().map(certificateConverter::toDTO).collect(Collectors.toList());
     }
 
@@ -48,6 +53,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         GiftCertificate certificate = giftCertificateRepository.findById(certificateId).orElseThrow(() ->
                 new ResourceNotFoundException(String.format(ErrorMessage.RESOURCE_NOT_FOUND, certificateId)));
         certificate.setTags(tagService.getTagsByCertificateId(certificateId));
+        adjustDateTimeAccordingToClientTimeZone(certificate, clientZone);
         return certificateConverter.toDTO(certificate);
     }
 
@@ -62,10 +68,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         existed.setPrice(update.getPrice());
         existed.setDescription(update.getDescription());
         existed.setDuration(update.getDuration());
-        existed.setUpdatedDate(LocalDateTime.now());
+        existed.setUpdatedDate(LocalDateTime.now(giftCertificateRepository.defaultZone));
         giftCertificateRepository.update(existed);
         tagService.unbindTagsFromCertificate(existed.getId());
         existed.setTags(tagService.bindTags(update));
+        adjustDateTimeAccordingToClientTimeZone(existed, clientZone);
         return certificateConverter.toDTO(existed);
     }
 
@@ -76,5 +83,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                 .ifPresentOrElse(t -> giftCertificateRepository.delete(certificateId), () -> {
                     throw new ResourceNotFoundException(String.format(ErrorMessage.RESOURCE_NOT_FOUND, certificateId));
                 });
+    }
+
+    private void adjustDateTimeAccordingToClientTimeZone(GiftCertificate certificate, ZoneId toZone) {
+        ZoneId repositoryZone = giftCertificateRepository.defaultZone;
+        certificate.setCreatedDate(DateTimeUtil.toZone(certificate.getCreatedDate(), repositoryZone, toZone));
+        certificate.setUpdatedDate(DateTimeUtil.toZone(certificate.getUpdatedDate(), repositoryZone, toZone));
     }
 }

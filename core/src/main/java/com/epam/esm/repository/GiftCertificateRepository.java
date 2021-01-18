@@ -3,10 +3,13 @@ package com.epam.esm.repository;
 import com.epam.esm.dto.SearchCertificateDto;
 import com.epam.esm.entity.GiftCertificate;
 
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
 public interface GiftCertificateRepository {
+    ZoneId defaultZone = ZoneId.of("UTC");
+
     GiftCertificate save(GiftCertificate giftCertificate);
 
     List<GiftCertificate> findAll(SearchCertificateDto searchDto);
