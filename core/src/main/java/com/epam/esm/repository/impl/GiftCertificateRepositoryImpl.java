@@ -31,33 +31,33 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
     private final JdbcTemplate jdbcTemplate;
     private final CertificateMapper certificateMapper;
 
-    private static final String SQL_CREATE_CERTIFICATE =
+    private static final String CREATE_CERTIFICATE =
             "insert into gift_certificate (name, description, price, duration, create_date, last_update_date) " +
                     "values (?, ?, ?, ?, ?, ?);";
 
-    private static final String SQL_READ_CERTIFICATES_BASE =
+    private static final String READ_CERTIFICATES_BASE =
             "select id, name, description, price, duration, create_date, last_update_date from gift_certificate " +
                     "where true ";
 
-    private static final String SQL_READ_CERTIFICATES_TAGS1 = "and id in (SELECT gift_certificate_id FROM " +
+    private static final String READ_CERTIFICATES_TAGS1 = "and id in (SELECT gift_certificate_id FROM " +
             "certificate_tag LEFT JOIN tag ON tag_id = tag.id WHERE tag.name IN (";
 
-    private static final String SQL_READ_CERTIFICATES_TAGS2 = ") " +
+    private static final String READ_CERTIFICATES_TAGS2 = ") " +
             "GROUP BY gift_certificate_id HAVING COUNT(tag_id) = ?)";
 
-    private static final String SQL_NAME_FILTER = "and name ilike '%";
+    private static final String NAME_FILTER = "and name ilike '%";
 
-    private static final String SQL_DESCRIPTION_FILTER = "and description ilike '%";
+    private static final String DESCRIPTION_FILTER = "and description ilike '%";
 
-    private static final String SQL_SORT_FIELD = "order by ";
+    private static final String SORT_FIELD = "order by ";
 
-    private static final String SQL_READ_CERTIFICATE_BY_ID = "select id, name, description, price, duration, " +
+    private static final String READ_CERTIFICATE_BY_ID = "select id, name, description, price, duration, " +
             "create_date, last_update_date from gift_certificate where id = ?";
 
-    private static final String SQL_UPDATE_CERTIFICATE = "update gift_certificate set name = ?, description = ?, " +
+    private static final String UPDATE_CERTIFICATE = "update gift_certificate set name = ?, description = ?, " +
             "price = ?, duration = ?, last_update_date = ? where id = ?";
 
-    private static final String SQL_DELETE_CERTIFICATE = "delete from gift_certificate where id = ?";
+    private static final String DELETE_CERTIFICATE = "delete from gift_certificate where id = ?";
 
     private static final String BLANK = " ";
 
@@ -67,7 +67,7 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
         LocalDateTime createdDate = DateTimeUtil
                 .toZone(giftCertificate.getCreatedDate(), defaultZone, ZoneId.systemDefault());
         jdbcTemplate.update(connection -> {
-            PreparedStatement preparedStatement = connection.prepareStatement(SQL_CREATE_CERTIFICATE, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement preparedStatement = connection.prepareStatement(CREATE_CERTIFICATE, Statement.RETURN_GENERATED_KEYS);
             int index = 1;
             preparedStatement.setString(index++, giftCertificate.getName());
             preparedStatement.setString(index++, giftCertificate.getDescription());
@@ -99,29 +99,29 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
      */
     @Override
     public List<GiftCertificate> findAll(SearchCertificateDto searchDto) {
-        StringBuilder sb = new StringBuilder(SQL_READ_CERTIFICATES_BASE);
+        StringBuilder sb = new StringBuilder(READ_CERTIFICATES_BASE);
         List<String> tags = searchDto.getTagNames();
         List queryParams = new ArrayList<>();
         if (tags != null && !tags.isEmpty()) {
-            sb.append(SQL_READ_CERTIFICATES_TAGS1)
+            sb.append(READ_CERTIFICATES_TAGS1)
                     .append("?, ".repeat(tags.size() - 1))
                     .append("?")
-                    .append(SQL_READ_CERTIFICATES_TAGS2);
+                    .append(READ_CERTIFICATES_TAGS2);
             queryParams.addAll(tags);
             queryParams.add(tags.size());
         }
         if (!StringUtils.isBlank(searchDto.getName())) {
-            sb.append(SQL_NAME_FILTER)
+            sb.append(NAME_FILTER)
                     .append(searchDto.getName())
                     .append("%' ");
         }
         if (!StringUtils.isBlank(searchDto.getDescription())) {
-            sb.append(SQL_DESCRIPTION_FILTER)
+            sb.append(DESCRIPTION_FILTER)
                     .append(searchDto.getDescription())
                     .append("%' ");
         }
         if (searchDto.getSortByField() != null) {
-            sb.append(SQL_SORT_FIELD)
+            sb.append(SORT_FIELD)
                     .append(searchDto.getSortByField())
                     .append(BLANK);
             if (DESC == searchDto.getSortOrder()) {
@@ -133,20 +133,20 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
 
     @Override
     public Optional<GiftCertificate> findById(Long certificateId) {
-        return jdbcTemplate.query(SQL_READ_CERTIFICATE_BY_ID, certificateMapper, certificateId).stream().findAny();
+        return jdbcTemplate.query(READ_CERTIFICATE_BY_ID, certificateMapper, certificateId).stream().findAny();
     }
 
     @Override
     public void update(GiftCertificate giftCertificate) {
         LocalDateTime updatedDate = DateTimeUtil
                 .toZone(giftCertificate.getUpdatedDate(), defaultZone, ZoneId.systemDefault());
-        jdbcTemplate.update(SQL_UPDATE_CERTIFICATE, giftCertificate.getName(), giftCertificate.getDescription(),
+        jdbcTemplate.update(UPDATE_CERTIFICATE, giftCertificate.getName(), giftCertificate.getDescription(),
                 giftCertificate.getPrice(), giftCertificate.getDuration(), updatedDate, giftCertificate.getId());
     }
 
     @Override
     public void delete(Long giftCertificateId) {
-        jdbcTemplate.update(SQL_DELETE_CERTIFICATE, giftCertificateId);
+        jdbcTemplate.update(DELETE_CERTIFICATE, giftCertificateId);
     }
 
     @Override
