@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
@@ -30,7 +29,6 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @ControllerAdvice
 @Slf4j
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@EnableWebMvc
 public class ErrorControllerAdvice {
     /**
      * Handles enum request parameters(url) conversion exception.
