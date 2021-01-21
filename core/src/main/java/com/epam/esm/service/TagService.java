@@ -17,7 +17,7 @@ public interface TagService {
 
     void deleteTag(Long tagId);
 
-    List<Tag> bindTags(GiftCertificate createdCertificate);
+    List<Tag> bindTags(Long certificateId, List<Tag> tags);
 
     void unbindTagsFromCertificate(Long id);
 

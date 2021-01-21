@@ -36,7 +36,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         createdCertificate.setCreatedDate(LocalDateTime.now(giftCertificateRepository.getDatabaseZoneId()));
         createdCertificate.setUpdatedDate(createdCertificate.getCreatedDate());
         giftCertificateRepository.save(createdCertificate);
-        List<Tag> tags = tagService.bindTags(createdCertificate);
+        List<Tag> tags = tagService.bindTags(createdCertificate.getId(), createdCertificate.getTags());
         createdCertificate.setTags(tags);
         adjustDateTimeAccordingToClientTimeZone(createdCertificate, clientZone);
         return certificateConverter.toDTO(createdCertificate);
@@ -73,7 +73,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         existed.setUpdatedDate(LocalDateTime.now(giftCertificateRepository.getDatabaseZoneId()));
         giftCertificateRepository.update(existed);
         tagService.unbindTagsFromCertificate(existed.getId());
-        existed.setTags(tagService.bindTags(update));
+        existed.setTags(tagService.bindTags(update.getId(), update.getTags()));
         adjustDateTimeAccordingToClientTimeZone(existed, clientZone);
         return certificateConverter.toDTO(existed);
     }

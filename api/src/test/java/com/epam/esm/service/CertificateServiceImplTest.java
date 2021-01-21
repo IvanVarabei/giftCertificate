@@ -1,7 +1,9 @@
 package com.epam.esm.service;
 
 import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.mapper.impl.CertificateConverterImpl;
 import com.epam.esm.repository.GiftCertificateRepository;
@@ -48,13 +50,17 @@ class CertificateServiceImplTest {
 
     @Test
     void should_invoke_tagService_bindTags_when_createCertificate() {
-        GiftCertificateDto certificateDto = new GiftCertificateDto();
-        certificateDto.setCreatedDate(LocalDateTime.now());
-        certificateDto.setUpdatedDate(LocalDateTime.now());
+        GiftCertificateDto certificateDto = mock(GiftCertificateDto.class);
+        TagDto tagDto = new TagDto(null, "testBindingTags");
+        Tag convertedTag = new Tag();
+        convertedTag.setName("testBindingTags");
+        when(certificateDto.getTags()).thenReturn(List.of(tagDto));
+        when(certificateDto.getCreatedDate()).thenReturn(LocalDateTime.now());
+        when(certificateDto.getUpdatedDate()).thenReturn(LocalDateTime.now());
 
         giftCertificateService.createCertificate(certificateDto);
 
-        verify(tagService).bindTags(any(GiftCertificate.class));
+        verify(tagService).bindTags(null, List.of(convertedTag));
     }
 
     @Test

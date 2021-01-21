@@ -104,7 +104,7 @@ class TagServiceImplTest {
         when(tagRepository.findByName(notExistedTag.getName())).thenReturn(Optional.empty());
         when(tagRepository.findByName("tagTestName")).thenReturn(Optional.of(tag));
 
-        tagService.bindTags(certificate);
+        tagService.bindTags(certificate.getId(), certificate.getTags());
 
         verify(tagRepository, times(2)).bindWithCertificate(any(), any());
     }
